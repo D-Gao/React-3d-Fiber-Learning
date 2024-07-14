@@ -10,6 +10,16 @@ module.exports = {
     "plugin:react/jsx-runtime",
   ],
   ignorePatterns: ["dist", ".eslintrc.cjs", "*.js"],
+  overrides: [
+    {
+      files: ["*.js", "*.jsx"],
+      rules: {
+        // Disable rules that are not relevant to JS/JSX files
+        "@typescript-eslint/no-var-requires": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+      },
+    },
+  ],
   parser: "@typescript-eslint/parser",
   plugins: ["react-refresh"],
   rules: {
@@ -17,6 +27,7 @@ module.exports = {
       "warn",
       { allowConstantExport: true },
     ],
+    "react/no-unknown-property": "off",
   },
   parserOptions: {
     ecmaVersion: "latest",
