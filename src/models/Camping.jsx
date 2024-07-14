@@ -10,6 +10,7 @@ import { Html, useGLTF } from "@react-three/drei";
 import { useAtom } from "jotai";
 import { degToRad } from "three/src/math/MathUtils.js";
 import { currentPageAtom } from "@/experiences/HomeLanding/HomeUI";
+import { useThree } from "@react-three/fiber";
 
 const OverlayItem = ({
   className = "",
@@ -20,30 +21,35 @@ const OverlayItem = ({
   ...props
 }) => {
   const [currentPage] = useAtom(currentPageAtom);
+  const { invalidate, gl } = useThree();
   return (
     <Html
       transform
       distanceFactor={1.2}
-      pointerEvents={"none"}
       center
       className={`w-48 rounded-md overflow-hidden ${
         currentPage === "store" ? "" : "opacity-0"
-      } transition-opacity duration-1000 ${className}`}
+      } transition-opacity duration-1000 ${className}  border`}
       {...props}
     >
-      <div className="bg-white bg-opacity-50 backdrop-blur-lg text-xs p-2 w-full">
-        <h2 className="font-bold">{title}</h2>
-        <p>{description}</p>
-      </div>
-      <button
-        className={`${bgColor} hover:bg-opacity-50 transition-colors duration-500 px-4 py-2 font-bold text-white w-full text-xs`}
+      <div
         onClick={() => {
           console.log("clicke on html");
-          //invalidate();
         }}
       >
-        Add to cart ${price}
-      </button>
+        <div className="bg-white bg-opacity-50 backdrop-blur-lg text-xs p-2 w-full">
+          <h2 className="font-bold">{title}</h2>
+          <p>{description}</p>
+        </div>
+        <button
+          className={`${bgColor} hover:bg-opacity-50 transition-colors duration-500 px-4 py-2 font-bold text-white w-full text-xs`}
+          onClick={() => {
+            console.log("clicke on html");
+          }}
+        >
+          Add to cart ${price}
+        </button>
+      </div>
     </Html>
   );
 };
