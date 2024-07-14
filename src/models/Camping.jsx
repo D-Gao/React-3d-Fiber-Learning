@@ -8,7 +8,7 @@ Command: npx gltfjsx@6.2.18 public/models/Camping Asset Collection.glb -o src/mo
 
 import { Html, useGLTF } from "@react-three/drei";
 import { useAtom } from "jotai";
-import { degToRad } from "three/src/math/MathUtils";
+import { degToRad } from "three/src/math/MathUtils.js";
 import { currentPageAtom } from "@/experiences/HomeLanding/HomeUI";
 
 const OverlayItem = ({
@@ -24,6 +24,7 @@ const OverlayItem = ({
     <Html
       transform
       distanceFactor={1.2}
+      pointerEvents={"none"}
       center
       className={`w-48 rounded-md overflow-hidden ${
         currentPage === "store" ? "" : "opacity-0"
@@ -36,6 +37,10 @@ const OverlayItem = ({
       </div>
       <button
         className={`${bgColor} hover:bg-opacity-50 transition-colors duration-500 px-4 py-2 font-bold text-white w-full text-xs`}
+        onClick={() => {
+          console.log("clicke on html");
+          //invalidate();
+        }}
       >
         Add to cart ${price}
       </button>

@@ -32,12 +32,43 @@ export const HomeExperience = () => {
   const textMaterial = useRef<any>();
   const [currentPage, setCurrentPage] = useAtom(currentPageAtom);
 
-  useFrame((_, delta) => {
+  /* useFrame((_, delta) => {
     textMaterial.current!.opacity = lerp(
       textMaterial.current!.opacity,
       currentPage === "home" || currentPage === "intro" ? 1 : 0,
       delta * 1.5
     );
+  }); */
+
+  //optimize the useframe for computation leaks
+  const running = useRef<boolean>();
+  const targetOpacity = useRef(0);
+
+  useEffect(() => {
+    running.current = true;
+    targetOpacity.current =
+      currentPage === "home" || currentPage === "intro" ? 1 : 0;
+
+    return () => {
+      running.current = false;
+    };
+  }, [currentPage]);
+
+  useFrame((_, delta) => {
+    if (!running.current) {
+      //state.performance.regress();
+      return;
+    }
+    textMaterial.current.opacity = lerp(
+      textMaterial.current.opacity,
+      targetOpacity.current,
+      delta * 1
+    );
+
+    // Check if the opacity is close enough to the target value
+    if (Math.abs(textMaterial.current.opacity - targetOpacity.current) < 0.01) {
+      running.current = false;
+    }
   });
 
   const intro = async () => {
@@ -119,7 +150,7 @@ export const HomeExperience = () => {
         <planeGeometry args={[100, 100]} />
         <MeshReflectorMaterial
           blur={[100, 100]}
-          resolution={2048}
+          resolution={512}
           mixBlur={1}
           mixStrength={10}
           roughness={1}

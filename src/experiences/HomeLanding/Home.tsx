@@ -13,7 +13,11 @@ import { Bloom, EffectComposer } from "@react-three/postprocessing";
 const Home = () => {
   return (
     <>
-      <Canvas shadows camera={{ position: [0, 0, 30], fov: 42 }}>
+      <Canvas
+        frameloop="demand"
+        shadows
+        camera={{ position: [0, 0, 30], fov: 42 }}
+      >
         <color attach="background" args={["#171720"]} />
         <fog attach="fog" args={["#171720", 10, 32]} />
         <Suspense>

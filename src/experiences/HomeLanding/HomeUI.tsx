@@ -9,11 +9,16 @@ export const UI = () => {
       <section
         className={`flex w-full h-full flex-col items-center justify-center 
       duration-500
-      ${currentPage === "home" ? "" : "opacity-0"}`}
+      ${currentPage === "home" ? "" : ""}`}
       >
         <div className="h-[66%]"></div>
         <button
-          onClick={() => setCurrentPage("store")}
+          onClick={() =>
+            setCurrentPage((p) => {
+              if (p === "home") return "store";
+              else return "home";
+            })
+          }
           className="pointer-events-auto py-4 px-8 bg-orange-400 text-white font-black rounded-full hover:bg-orange-600 cursor-pointer transition-colors duration-500"
         >
           ENTER
