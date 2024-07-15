@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./experiences/HomeLanding/Home";
+import ImageTransition from "./experiences/ImageTransition/ImageTransition";
 
 function App() {
   return (
@@ -7,6 +8,8 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
+
+          <Route path="/image" element={<ImageTransition />} />
         </Routes>
       </Router>
     </div>

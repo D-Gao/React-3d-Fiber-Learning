@@ -10,7 +10,6 @@ import { Html, useGLTF } from "@react-three/drei";
 import { useAtom } from "jotai";
 import { degToRad } from "three/src/math/MathUtils.js";
 import { currentPageAtom } from "@/experiences/HomeLanding/HomeUI";
-import { useThree } from "@react-three/fiber";
 
 const OverlayItem = ({
   className = "",
@@ -21,7 +20,6 @@ const OverlayItem = ({
   ...props
 }) => {
   const [currentPage] = useAtom(currentPageAtom);
-  const { invalidate, gl } = useThree();
   return (
     <Html
       transform
