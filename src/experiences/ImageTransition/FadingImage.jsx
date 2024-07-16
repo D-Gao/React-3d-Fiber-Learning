@@ -1,7 +1,7 @@
 import { shaderMaterial, useTexture } from "@react-three/drei";
-import { extend, useFrame } from "@react-three/fiber";
+import { extend, useFrame, useThree } from "@react-three/fiber";
 import { easing, geometry } from "maath";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
 export const ImageFadeMaterial = shaderMaterial(
   {
@@ -67,9 +67,48 @@ export const FadingImage = (props) => {
     "/textures/full_body.jpg",
   ]);
   const [hovered, setHover] = useState(false);
-  useFrame((_state, delta) => {
+  /* useFrame((_state, delta) => {
     easing.damp(ref.current, "dispFactor", hovered ? 1 : 0, 0.4, delta);
-  }, 0);
+  }, 0); */
+  const selector = useThree();
+  const runningRef = useRef(false);
+  const idRef = useRef();
+
+  useFrame((_state, delta) => {
+    if (!runningRef.current) return;
+    console.log("heer");
+    if (ref.current) {
+      const running = easing.damp(
+        ref.current,
+        "dispFactor",
+        hovered ? 1 : 0,
+        0.4,
+        delta
+      );
+      if (running) {
+        console.log("id:", idRef.current);
+        if (idRef.current) {
+          console.log("should clear id");
+          clearTimeout(idRef.current);
+        }
+        _state.invalidate();
+      } else {
+        console.log("should set tiemout");
+        idRef.current = setTimeout(() => {
+          console.log("should stop");
+          runningRef.current = false;
+        }, 200);
+      }
+    }
+  });
+
+  useEffect(() => {
+    console.log("dsadas");
+    selector.setFrameloop("demand");
+    runningRef.current = true;
+    //selector.invalidate();
+  }, [hovered]);
+
   return (
     <mesh
       {...props}
