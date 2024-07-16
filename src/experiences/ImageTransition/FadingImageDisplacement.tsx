@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { shaderMaterial, useTexture } from "@react-three/drei";
-import { extend, useFrame, Object3DNode, MeshProps } from "@react-three/fiber";
+import {
+  extend,
+  useFrame,
+  Object3DNode,
+  MeshProps,
+  useThree,
+} from "@react-three/fiber";
 import { easing, geometry } from "maath";
 import { RefObject, useRef, useState } from "react";
 import { ShaderMaterial, Texture } from "three";
@@ -77,6 +83,8 @@ declare module "@react-three/fiber" {
 type Props = MeshProps;
 
 export const FadingImageDisplacement = (props: Props) => {
+  const selector = useThree();
+
   const ref = useRef<ShaderMaterial>() as RefObject<ShaderMaterial>;
   // const ref = useRef<any>();
   const [texture1, texture2, dispTexture] = useTexture([
@@ -85,16 +93,65 @@ export const FadingImageDisplacement = (props: Props) => {
     "/textures/displacement/11.jpg",
   ]);
   const [hovered, setHover] = useState(false);
+  const runningRef = useRef<boolean>(false);
+  const idRef = useRef<NodeJS.Timeout>();
+
+  //work-around to unsubscribe a usefram
+  /* useFrame(function (_state, delta) {
+    const { gl, internal } = _state;
+    let that = this;
+    // Remove subscriber from list
+    internal.subscribers = internal.subscribers.filter((s) => s.ref !== that);
+    internal.priority = internal.priority > 1 ? internal.priority - 1 : 0;
+    console.log(internal.subscribers);
+    gl.render(_state.scene, _state.camera);
+  }, 1); */
   useFrame((_state, delta) => {
-    /* console.log(ref.current); */
-    if (ref.current)
-      easing.damp(ref.current, "dispFactor", hovered ? 1 : 0, 0.4, delta);
+    if (!runningRef.current) return;
+    if (ref.current) {
+      const running = easing.damp(
+        ref.current,
+        "dispFactor",
+        hovered ? 1 : 0,
+        0.4,
+        delta
+      );
+      if (running) {
+        console.log("id:", idRef.current);
+        if (idRef.current) {
+          console.log("should clear id");
+          clearTimeout(idRef.current);
+        }
+        _state.invalidate();
+      } else {
+        console.log("should set tiemout");
+        idRef.current = setTimeout(() => {
+          console.log("should stop");
+          runningRef.current = false;
+        }, 200);
+      }
+    }
   });
+
+  /* useEffect(() => {
+    console.log(selector);
+    selector.setFrameloop("demand");
+    //selector.invalidate();
+  }, [hovered]); */
+
   return (
     <mesh
       {...props}
-      onPointerOver={() => setHover(true)}
-      onPointerOut={() => setHover(false)}
+      onPointerOver={() => {
+        runningRef.current = true;
+        selector.setFrameloop("demand");
+        setHover(true);
+      }}
+      onPointerOut={() => {
+        runningRef.current = true;
+        selector.setFrameloop("demand");
+        setHover(false);
+      }}
     >
       <roundedPlaneGeometry
         args={[2.25, 4]} // 9:16 aspect ratio

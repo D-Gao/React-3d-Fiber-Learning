@@ -1,6 +1,6 @@
 import { shaderMaterial, useTexture } from "@react-three/drei";
 import { extend, useFrame } from "@react-three/fiber";
-import { easing } from "maath";
+import { easing, geometry } from "maath";
 import { useRef, useState } from "react";
 
 export const ImageFadeMaterial = shaderMaterial(
@@ -57,6 +57,7 @@ export const ImageFadeMaterial = shaderMaterial(
 
 extend({
   ImageFadeMaterial,
+  RoundedPlaneGeometry: geometry.RoundedPlaneGeometry,
 });
 
 export const FadingImage = (props) => {
@@ -68,7 +69,7 @@ export const FadingImage = (props) => {
   const [hovered, setHover] = useState(false);
   useFrame((_state, delta) => {
     easing.damp(ref.current, "dispFactor", hovered ? 1 : 0, 0.4, delta);
-  });
+  }, 0);
   return (
     <mesh
       {...props}
