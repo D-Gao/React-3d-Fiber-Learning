@@ -28,6 +28,7 @@ module.exports = {
       { allowConstantExport: true },
     ],
     "react/no-unknown-property": "off",
+    "react/prop-types": "off",
   },
   parserOptions: {
     ecmaVersion: "latest",
