@@ -103,7 +103,6 @@ export const FadingImage = (props) => {
   });
 
   useEffect(() => {
-    console.log("dsadas");
     selector.setFrameloop("demand");
     runningRef.current = true;
     //selector.invalidate();
