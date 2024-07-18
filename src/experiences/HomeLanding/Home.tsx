@@ -9,6 +9,7 @@ import { UI } from "@/experiences/HomeLanding/HomeUI";
 
 import { HomeExperience } from "./HomeExperience";
 import { Bloom, EffectComposer } from "@react-three/postprocessing";
+import { Loader } from "@react-three/drei";
 
 const Home = () => {
   return (
@@ -23,13 +24,15 @@ const Home = () => {
       >
         <color attach="background" args={["#171720"]} />
         <fog attach="fog" args={["#171720", 10, 32]} />
-        <Suspense>
+        <Suspense fallback={null}>
           <HomeExperience />
         </Suspense>
         <EffectComposer>
           <Bloom mipmapBlur intensity={1.2} />
         </EffectComposer>
       </Canvas>
+      <Loader />
+
       <UI />
     </>
   );

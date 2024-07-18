@@ -3,7 +3,6 @@ import { FC, useState } from "react";
 import { DissolveMaterial } from "./DissolveMaterial";
 import * as THREE from "three";
 import { useControls } from "leva";
-import CustomBox from "./CustomBox";
 
 const boxMaterial = new THREE.MeshStandardMaterial({
   color: "white",
