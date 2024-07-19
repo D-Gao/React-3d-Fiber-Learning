@@ -1,7 +1,7 @@
 import { Canvas } from "@react-three/fiber";
 import { FC } from "react";
 import ControlsExperience from "./ControlsExperience";
-import { KeyboardControls } from "@react-three/drei";
+import { KeyboardControls, Loader } from "@react-three/drei";
 
 const Controls: FC = () => {
   const keyboardMap = [
@@ -9,8 +9,7 @@ const Controls: FC = () => {
     { name: "backward", keys: ["ArrowDown", "KeyS"] },
     { name: "left", keys: ["ArrowLeft", "KeyA"] },
     { name: "right", keys: ["ArrowRight", "KeyD"] },
-    { name: "run", keys: ["ArrowUp", "KeyW"] },
-    { name: "forward", keys: ["Shift"] },
+    { name: "run", keys: ["Shift"] },
     { name: "jump", keys: ["Space"] },
   ];
 
@@ -28,6 +27,7 @@ const Controls: FC = () => {
           <ControlsExperience />
         </Canvas>
       </KeyboardControls>
+      <Loader />
     </>
   );
 };

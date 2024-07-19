@@ -29,7 +29,7 @@ const CharacterController: FC<Props> = ({ model, ...props }: Props) => {
 
   return (
     <group>
-      <RigidBody type="fixed" colliders="trimesh">
+      <RigidBody type="fixed" colliders="trimesh" name="floor">
         <primitive {...props} object={scene} ref={group} />
       </RigidBody>
     </group>

@@ -67,6 +67,8 @@ const CharacterController: FC = () => {
   const [, get] = useKeyboardControls();
   const isClicking = useRef(false);
 
+  const canJump = useRef<boolean>(true);
+
   useEffect(() => {
     const onMouseDown = () => {
       isClicking.current = true;
@@ -87,7 +89,7 @@ const CharacterController: FC = () => {
     };
   }, []);
 
-  useFrame(({ camera, mouse }) => {
+  useFrame(({ camera, pointer }) => {
     if (rb.current) {
       const vel = rb.current.linvel();
 
@@ -106,11 +108,11 @@ const CharacterController: FC = () => {
       let speed = get().run ? RUN_SPEED : WALK_SPEED;
 
       if (isClicking.current) {
-        console.log("clicking", mouse.x, mouse.y);
-        if (Math.abs(mouse.x) > 0.1) {
-          movement.x = -mouse.x;
+        console.log("clicking", pointer.x, pointer.y);
+        if (Math.abs(pointer.x) > 0.1) {
+          movement.x = -pointer.x;
         }
-        movement.z = mouse.y + 0.4;
+        movement.z = pointer.y + 0.4;
         if (Math.abs(movement.x) > 0.5 || Math.abs(movement.z) > 0.5) {
           speed = RUN_SPEED;
         }
@@ -151,6 +153,13 @@ const CharacterController: FC = () => {
         );
 
       rb.current.setLinvel(vel, true);
+      if (get().jump) {
+        if (canJump.current && Math.abs(vel.y) < 0.5) {
+          console.log("can jump");
+          rb.current.applyImpulse(new Vector3(0, 0.2, 0), true);
+          canJump.current = false;
+        }
+      }
     }
 
     // CAMERA
@@ -174,7 +183,21 @@ const CharacterController: FC = () => {
   });
 
   return (
-    <RigidBody colliders={false} lockRotations ref={rb}>
+    <RigidBody
+      colliders={false}
+      lockRotations
+      ref={rb}
+      onCollisionEnter={({ other }) => {
+        if (other.rigidBodyObject?.name === "floor") {
+          canJump.current = true;
+        }
+      }}
+      onCollisionExit={({ other }) => {
+        if (other.rigidBodyObject?.name === "floor") {
+          canJump.current = false;
+        }
+      }}
+    >
       <group ref={container}>
         <group ref={cameraTarget} position-z={1.5} />
         <group ref={cameraPosition} position-y={4} position-z={-4} />

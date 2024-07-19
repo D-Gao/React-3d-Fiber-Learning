@@ -58,7 +58,7 @@ const ControlsExperience: FC = () => {
           attach={"shadow-camera"}
         />
       </directionalLight>
-      <Physics key={map}>
+      <Physics key={map} debug>
         <Map
           scale={maps[map].scale}
           position={maps[map].position}
