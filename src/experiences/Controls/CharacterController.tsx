@@ -92,7 +92,7 @@ const CharacterController: FC = () => {
   useFrame(({ camera, pointer }) => {
     if (rb.current) {
       const vel = rb.current.linvel();
-
+      console.log(vel.y);
       const movement = {
         x: 0,
         z: 0,
@@ -152,14 +152,15 @@ const CharacterController: FC = () => {
           0.1
         );
 
-      rb.current.setLinvel(vel, true);
       if (get().jump) {
-        if (canJump.current && Math.abs(vel.y) < 0.5) {
-          console.log("can jump");
-          rb.current.applyImpulse(new Vector3(0, 0.2, 0), true);
+        if (canJump.current) {
+          //rb.current.applyImpulse({ x: 0, y: 0.1, z: 0 }, true);
+          vel.y = 5;
           canJump.current = false;
         }
       }
+
+      rb.current.setLinvel(vel, true);
     }
 
     // CAMERA
@@ -184,6 +185,7 @@ const CharacterController: FC = () => {
 
   return (
     <RigidBody
+      mass={2}
       colliders={false}
       lockRotations
       ref={rb}
@@ -192,11 +194,11 @@ const CharacterController: FC = () => {
           canJump.current = true;
         }
       }}
-      onCollisionExit={({ other }) => {
+      /* onCollisionExit={({ other }) => {
         if (other.rigidBodyObject?.name === "floor") {
           canJump.current = false;
         }
-      }}
+      }} */
     >
       <group ref={container}>
         <group ref={cameraTarget} position-z={1.5} />
