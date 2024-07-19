@@ -154,6 +154,7 @@ const CharacterController: FC = () => {
 
       if (get().jump) {
         if (canJump.current) {
+          setAnimation("jump_air");
           //rb.current.applyImpulse({ x: 0, y: 0.1, z: 0 }, true);
           vel.y = 5;
           canJump.current = false;
