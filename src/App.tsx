@@ -3,6 +3,7 @@ import Home from "./experiences/HomeLanding/Home";
 import ImageTransition from "./experiences/ImageTransition/ImageTransition";
 import Portal from "./experiences/Portal/Portal";
 import Dissolve from "./experiences/Dissolve/Dissolve";
+import Controls from "./experiences/Controls/Controls";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route path="/portal" element={<Portal />} />
           <Route path="/image" element={<ImageTransition />} />
           <Route path="/dissolve" element={<Dissolve />} />
+          <Route path="/controls" element={<Controls />} />
         </Routes>
       </Router>
     </div>
