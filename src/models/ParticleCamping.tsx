@@ -12,7 +12,6 @@ import { GLTF } from "three-stdlib";
 import { useEffect, useRef } from "react";
 import { BufferGeometry, Points } from "three";
 import { Camp } from "@/models/Camp";
-import { lerp } from "three/src/math/MathUtils.js";
 import { easing } from "maath";
 
 type GLTFResult = GLTF & {
@@ -151,7 +150,7 @@ declare module "@react-three/fiber" {
     customPointsMaterial: Object3DNode<
       THREE.ShaderMaterial,
       typeof CustomPointsMaterial
-    > /* & { time: number } */;
+    >;
   }
 }
 
@@ -160,8 +159,6 @@ export function ParticleCamping(props: JSX.IntrinsicElements["group"]) {
     "/models/Camping Asset Collection.glb"
   ) as GLTFResult;
 
-  const state = useThree();
-
   const pointsRef = useRef<Points>(null);
   const pointsMaterialRef = useRef<THREE.ShaderMaterial>(null);
   const shaderMaterialRef = useRef<THREE.ShaderMaterial>(null);
@@ -169,17 +166,8 @@ export function ParticleCamping(props: JSX.IntrinsicElements["group"]) {
   const campRef = useRef<THREE.Group>(null);
 
   useEffect(() => {
-    const sign = hoverRef.current ? 1 : 0;
-
-    /* campRef.current?.traverse((child) => {
-      if (child instanceof THREE.Mesh) {
-        child.material.transparent = true;
-        child.material.opacity = 0;
-        child.material.needsUpdate = true;
-      }
-    }); */
-
     let allPositions: number[] = [];
+
     for (const key in nodes) {
       if (nodes[key].geometry) {
         const geometry = nodes[key].geometry;
@@ -204,12 +192,8 @@ export function ParticleCamping(props: JSX.IntrinsicElements["group"]) {
   }, [nodes]);
 
   useFrame(({ clock }, delta) => {
-    console.log(delta);
     if (pointsMaterialRef.current) {
       pointsMaterialRef.current.uniforms.time.value = clock.getElapsedTime(); // Update the time uniform
-      /* pointsMaterialRef.current.uniforms.opacity.value = hoverRef.current
-        ? 1
-        : 0; */
 
       easing.damp(
         pointsMaterialRef.current,
@@ -230,12 +214,18 @@ export function ParticleCamping(props: JSX.IntrinsicElements["group"]) {
     const sign = hoverRef.current ? 1 : -1;
     campRef.current?.traverse((child) => {
       if (child instanceof THREE.Mesh) {
-        if (child.material.opacity <= 1 && child.material.opacity >= 0) {
+        if (
+          (child.material.opacity === 1 && sign === 1) ||
+          (child.material.opacity === 0 && sign === -1)
+        ) {
+          child.material.depthWrite =
+            child.material.opacity === 0 ? false : true;
+          child.material.needsUpdate = true;
+        } else {
           child.material.transparent = true;
           const temp: number = child.material.opacity + 0.1 * delta * sign;
-
           child.material.opacity = Math.max(Math.min(temp, 1), 0);
-          child.material.depthWrite = false;
+          child.material.depthWrite = true;
           child.material.needsUpdate = true;
         }
       }
@@ -256,15 +246,11 @@ export function ParticleCamping(props: JSX.IntrinsicElements["group"]) {
           console.log("leave");
           hoverRef.current = false;
         }}
-      >
-        {/* <customPointsMaterial
-          ref={shaderMaterialRef}
-          attach={"material"}
-         
-        /> */}
-      </Camp>
+      ></Camp>
 
-      <points ref={pointsRef}>
+      <points
+        ref={pointsRef} /* position-x={10} position-y={10} position-z={10} */
+      >
         {/* <bufferGeometry /> */}
         <customPointsMaterial
           transparent={true}
