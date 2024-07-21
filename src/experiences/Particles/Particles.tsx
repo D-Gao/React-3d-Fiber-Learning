@@ -6,7 +6,7 @@ const Particles = () => {
   return (
     <>
       <Canvas
-        frameloop="demand"
+        /* frameloop="demand" */
         onPointerMissed={(e) => {
           console.log(e);
         }}

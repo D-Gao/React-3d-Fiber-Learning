@@ -4,8 +4,8 @@ Command: npx gltfjsx@6.4.1 public/models/table.gltf -o src/models/Table.tsx --ty
 */
 
 import * as THREE from "three";
-import { shaderMaterial, useGLTF } from "@react-three/drei";
-import { Object3DNode, extend } from "@react-three/fiber";
+import { Float, shaderMaterial, useGLTF } from "@react-three/drei";
+import { Object3DNode, extend, useFrame, useThree } from "@react-three/fiber";
 import { GLTF } from "three-stdlib";
 import { useEffect, useRef } from "react";
 import { BufferGeometry, Points } from "three";
@@ -21,13 +21,20 @@ type GLTFResult = GLTF & {
 // Vertex Shader
 const vertexShader = `
   uniform float size;
+  uniform float time; // Add the time uniform
   varying vec3 vColor;
   attribute vec3 color;
 
+  float randomx(float seed) {
+    return sin(seed) * 43758.5453123;
+  }
+
   void main() {
     vColor = color;
+    
     vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-    gl_PointSize = size * (300.0 / -mvPosition.z);
+    float rnd = randomx(position.x + position.y + position.z);
+    gl_PointSize = size * (300.0 / -mvPosition.z) * abs(sin(time-rnd));
     gl_Position = projectionMatrix * mvPosition;
   }
 `;
@@ -51,7 +58,7 @@ const fragmentShader = `
 `;
 
 const CustomPointsMaterial = shaderMaterial(
-  { color: new THREE.Color(0xffffff), size: 0.1 },
+  { color: new THREE.Color(0xffffff), size: 0.3, time: 0 },
   vertexShader,
   fragmentShader
 );
@@ -65,8 +72,7 @@ declare module "@react-three/fiber" {
     customPointsMaterial: Object3DNode<
       THREE.ShaderMaterial,
       typeof CustomPointsMaterial
-    > /* &
-      Partial<typeof uniformsProps>; */;
+    > & { time: number };
   }
 }
 
@@ -75,7 +81,10 @@ export function ParticleCamping(props: JSX.IntrinsicElements["group"]) {
     "/models/Camping Asset Collection.glb"
   ) as GLTFResult;
 
+  const state = useThree();
+
   const pointsRef = useRef<Points>(null);
+  const materialRef = useRef<THREE.ShaderMaterial>(null);
 
   useEffect(() => {
     let allPositions: number[] = [];
@@ -103,12 +112,23 @@ export function ParticleCamping(props: JSX.IntrinsicElements["group"]) {
     pointsRef.current!.geometry = particlesGeometry;
   }, [nodes]);
 
+  useFrame(({ clock }) => {
+    if (materialRef.current) {
+      materialRef.current.uniforms.time.value = clock.getElapsedTime(); // Update the time uniform
+    }
+  });
+
   return (
     <>
       <Camping />
+
       <points ref={pointsRef}>
         <bufferGeometry />
-        <customPointsMaterial attach={"material"} />
+        <customPointsMaterial
+          ref={materialRef}
+          attach={"material"}
+          time={state.clock.getElapsedTime()}
+        />
         {/*   <pointsMaterial size={0.05} color={0xffffff} /> */}
       </points>
     </>
