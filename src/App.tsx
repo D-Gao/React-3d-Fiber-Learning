@@ -5,6 +5,7 @@ import Portal from "./experiences/Portal/Portal";
 import Dissolve from "./experiences/Dissolve/Dissolve";
 import Controls from "./experiences/Controls/Controls";
 import Particles from "./experiences/Particles/Particles";
+import Earth from "./experiences/Earth/Earth";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/dissolve" element={<Dissolve />} />
           <Route path="/controls" element={<Controls />} />
           <Route path="/particles" element={<Particles />} />
+          <Route path="/earth" element={<Earth />} />
         </Routes>
       </Router>
     </div>
