@@ -6,8 +6,8 @@ Command: npx gltfjsx@6.4.1 public/models/table.gltf -o src/models/Table.tsx --ty
 */
 
 import * as THREE from "three";
-import { Float, shaderMaterial, useGLTF } from "@react-three/drei";
-import { Object3DNode, extend, useFrame, useThree } from "@react-three/fiber";
+import { shaderMaterial, useGLTF } from "@react-three/drei";
+import { Object3DNode, extend, useFrame } from "@react-three/fiber";
 import { GLTF } from "three-stdlib";
 import { useEffect, useRef } from "react";
 import { BufferGeometry, Points } from "three";
@@ -70,53 +70,6 @@ const fragmentShader = /*glsl*/ `
   }
 `;
 
-const objVertexShader = /*glsl*/ `
-  uniform float size;
-  uniform float time; // Add the time uniform
-  uniform vec2 mouse;
-  varying vec3 vColor;
-  attribute vec3 color;
-
-
-  float randomx(float seed) {
-    return sin(seed) * 43758.5453123;
-  }
-
-  void main() {
-    vColor = color;
-    
-    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-
-    vec4 worldPosition = modelMatrix * vec4(position, 1.0);
-
-    vec4 clipPosition =  projectionMatrix * mvPosition;
-
-    float rnd = randomx(position.x + position.y + position.z);
-    float dist = length(mouse - clipPosition.xy);
-    float sizeModifier = 1.0/*  / (dist + 0.1) */;
-    gl_PointSize = size * sizeModifier * (300.0 / -mvPosition.z) /* * abs(sin(time-rnd) ) */;
-    gl_Position = clipPosition;
-  }
-`;
-
-// Fragment Shader
-const objFragmentShader = /*glsl*/ `
-  uniform vec3 color;
-  varying vec3 vColor;
-
-  void main() {
-    float r = 0.5;
-    vec2 uv = gl_PointCoord.xy - vec2(0.5);
-    float dist = length(uv);
-
-    if (dist < r) {
-      gl_FragColor = vec4(vColor * color, 1.0);
-    } else {
-      discard;
-    }
-  }
-`;
-
 const CustomPointsMaterial = shaderMaterial(
   {
     color: new THREE.Color(0xffffff),
@@ -127,18 +80,6 @@ const CustomPointsMaterial = shaderMaterial(
   },
   vertexShader,
   fragmentShader
-);
-
-const CustomShaderMaterial = shaderMaterial(
-  {
-    color: new THREE.Color(0xffffff),
-    size: 0.3,
-    time: 0,
-    mouse: new THREE.Vector2(0, 0),
-    opacity: 1,
-  },
-  objVertexShader,
-  objFragmentShader
 );
 
 extend({
@@ -154,14 +95,13 @@ declare module "@react-three/fiber" {
   }
 }
 
-export function ParticleCamping(props: JSX.IntrinsicElements["group"]) {
+export function ParticleCamping() {
   const { nodes } = useGLTF(
     "/models/Camping Asset Collection.glb"
   ) as GLTFResult;
 
   const pointsRef = useRef<Points>(null);
   const pointsMaterialRef = useRef<THREE.ShaderMaterial>(null);
-  const shaderMaterialRef = useRef<THREE.ShaderMaterial>(null);
   const hoverRef = useRef<boolean>(false);
   const campRef = useRef<THREE.Group>(null);
 
