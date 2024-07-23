@@ -36,7 +36,7 @@ const starVertexShader = /*glsl*/ `
     vec4 clipPosition =  projectionMatrix * mvPosition;
 
     float rnd = randomx(position.x + position.y + position.z);
-    gl_PointSize =size * (300.0 / -mvPosition.z) * abs(sin(2.0*(time - rnd)));
+    gl_PointSize = 6.0 * abs(sin(rnd)) * abs(sin(2.0*(time - rnd))); //size * (300.0 / -mvPosition.z) * abs(sin(2.0*(time - rnd)));
     gl_Position = clipPosition;
   }
 `;
@@ -156,7 +156,7 @@ const EarthExperience: FC = () => {
 
   useEffect(() => {
     const starVertices: number[] = [];
-    for (let i = 0; i < 1000; i++) {
+    for (let i = 0; i < 10000; i++) {
       const x = (Math.random() - 0.5) * 1000;
       const y = (Math.random() - 0.5) * 1000;
       const z = (Math.random() - 0.5) * 1000;
