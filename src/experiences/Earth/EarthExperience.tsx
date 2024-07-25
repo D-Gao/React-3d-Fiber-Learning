@@ -36,7 +36,7 @@ const starVertexShader = /*glsl*/ `
     vec4 clipPosition =  projectionMatrix * mvPosition;
 
     float rnd = randomx(position.x + position.y + position.z);
-    gl_PointSize = 6.0 * abs(sin(rnd)) * abs(sin(2.0*(time - rnd))); //size * (300.0 / -mvPosition.z) * abs(sin(2.0*(time - rnd)));
+    gl_PointSize = 4.0 * abs(sin(rnd)) * abs(sin(2.0*(time - rnd))); //size * (300.0 / -mvPosition.z) * abs(sin(2.0*(time - rnd)));
     gl_Position = clipPosition;
   }
 `;

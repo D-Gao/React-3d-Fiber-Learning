@@ -6,6 +6,7 @@ import Dissolve from "./experiences/Dissolve/Dissolve";
 import Controls from "./experiences/Controls/Controls";
 import Particles from "./experiences/Particles/Particles";
 import Earth from "./experiences/Earth/Earth";
+import EarthV2 from "./experiences/EarthV2/EarthV2";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/controls" element={<Controls />} />
           <Route path="/particles" element={<Particles />} />
           <Route path="/earth" element={<Earth />} />
+          <Route path="/earthv2" element={<EarthV2 />} />
         </Routes>
       </Router>
     </div>
