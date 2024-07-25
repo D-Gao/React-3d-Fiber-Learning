@@ -7,6 +7,7 @@ import Controls from "./experiences/Controls/Controls";
 import Particles from "./experiences/Particles/Particles";
 import Earth from "./experiences/Earth/Earth";
 import EarthV2 from "./experiences/EarthV2/EarthV2";
+import Coffee from "./experiences/Coffee/Coffee";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/particles" element={<Particles />} />
           <Route path="/earth" element={<Earth />} />
           <Route path="/earthv2" element={<EarthV2 />} />
+          <Route path="/coffee" element={<Coffee />} />
         </Routes>
       </Router>
     </div>
