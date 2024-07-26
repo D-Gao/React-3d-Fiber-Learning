@@ -8,6 +8,7 @@ import Particles from "./experiences/Particles/Particles";
 import Earth from "./experiences/Earth/Earth";
 import EarthV2 from "./experiences/EarthV2/EarthV2";
 import Coffee from "./experiences/Coffee/Coffee";
+import Hologram from "./experiences/Hologram/Hologram";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/earth" element={<Earth />} />
           <Route path="/earthv2" element={<EarthV2 />} />
           <Route path="/coffee" element={<Coffee />} />
+          <Route path="/hologram" element={<Hologram />} />
         </Routes>
       </Router>
     </div>
