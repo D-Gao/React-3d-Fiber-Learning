@@ -10,6 +10,7 @@ import EarthV2 from "./experiences/EarthV2/EarthV2";
 import Coffee from "./experiences/Coffee/Coffee";
 import Hologram from "./experiences/Hologram/Hologram";
 import Morph from "./experiences/Morph/Morph";
+import Book from "./experiences/Book/Book";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="/coffee" element={<Coffee />} />
           <Route path="/hologram" element={<Hologram />} />
           <Route path="/morph" element={<Morph />} />
+          <Route path="/book" element={<Book />} />
         </Routes>
       </Router>
     </div>
