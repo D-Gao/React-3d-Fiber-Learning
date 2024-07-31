@@ -316,3 +316,9 @@ export const Book: FC = ({ ...props }: Props) => {
     </group>
   );
 };
+
+pages.forEach((page) => {
+  useTexture.preload(`/textures/${page.front}.jpg`);
+  useTexture.preload(`/textures/${page.back}.jpg`);
+  useTexture.preload(`/textures/book-cover-roughness.jpg`);
+});
