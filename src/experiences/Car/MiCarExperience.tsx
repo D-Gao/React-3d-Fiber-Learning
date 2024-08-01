@@ -18,7 +18,7 @@ const MiCarExperience: FC = () => {
   return (
     <>
       <OrbitControls></OrbitControls>
-      <CarMi /* rotation={[0, (-Math.PI * 5) / 6, 0]} */></CarMi>
+      <CarMi rotation={[0, (-Math.PI * 5) / 6, 0]}></CarMi>
     </>
   );
 };

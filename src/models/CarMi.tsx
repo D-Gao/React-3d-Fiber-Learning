@@ -6,6 +6,7 @@ Command: npx gltfjsx@6.4.1 public/models/su7.glb -o src/models/CarMi.tsx --types
 import * as THREE from "three";
 import { useGLTF } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
+import { DissolveMaterial } from "@/experiences/Car/DissolveMaterial";
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -95,8 +96,14 @@ export function CarMi(props: JSX.IntrinsicElements["group"]) {
             />
             <mesh
               geometry={nodes.Object_32.geometry}
-              material={materials.Car_body}
-            />
+              /*  material={materials.Car_body} */
+            >
+              <DissolveMaterial
+                baseMaterial={materials.Car_body}
+                color={""}
+                visible={true}
+              ></DissolveMaterial>
+            </mesh>
             <mesh
               geometry={nodes.Object_33.geometry}
               material={materials["M_BODY_black.004"]}
@@ -121,8 +128,14 @@ export function CarMi(props: JSX.IntrinsicElements["group"]) {
             />
             <mesh
               geometry={nodes.Object_39.geometry}
-              material={materials.Car_body}
-            />
+              /* material={materials.Car_body} */
+            >
+              <DissolveMaterial
+                baseMaterial={materials.Car_body}
+                color={""}
+                visible={true}
+              ></DissolveMaterial>
+            </mesh>
             <mesh
               geometry={nodes.Object_40.geometry}
               material={materials.Car_window}
@@ -141,10 +154,13 @@ export function CarMi(props: JSX.IntrinsicElements["group"]) {
               geometry={nodes.Object_44.geometry}
               material={materials["M_BODY_inside.004"]}
             />
-            <mesh
-              geometry={nodes.Object_45.geometry}
-              material={materials.Car_body}
-            />
+            <mesh geometry={nodes.Object_45.geometry}>
+              <DissolveMaterial
+                baseMaterial={materials.Car_body}
+                color={""}
+                visible={true}
+              ></DissolveMaterial>
+            </mesh>
             <mesh
               geometry={nodes.Object_46.geometry}
               material={materials["M_BODY_black.004"]}
@@ -169,8 +185,14 @@ export function CarMi(props: JSX.IntrinsicElements["group"]) {
             />
             <mesh
               geometry={nodes.Object_52.geometry}
-              material={materials.Car_body}
-            />
+              /*  material={materials.Car_body} */
+            >
+              <DissolveMaterial
+                baseMaterial={materials.Car_body}
+                color={""}
+                visible={true}
+              ></DissolveMaterial>
+            </mesh>
             <mesh
               geometry={nodes.Object_53.geometry}
               material={materials.Car_window}
@@ -197,12 +219,18 @@ export function CarMi(props: JSX.IntrinsicElements["group"]) {
           <group rotation={[Math.PI / 2, 0, 0]} scale={0.01}>
             <mesh
               geometry={nodes.Object_18.geometry}
-              material={materials.Car_body}
-            />
+              /*  material={materials.Car_body} */
+            >
+              <DissolveMaterial
+                baseMaterial={materials.Car_body}
+                color={""}
+                visible={true}
+              ></DissolveMaterial>
+            </mesh>
             <mesh
               geometry={nodes.Object_19.geometry}
               material={materials["M_BODY_inside.004"]}
-            />
+            ></mesh>
             <mesh
               geometry={nodes.Object_20.geometry}
               material={materials["M_BODY_black.004"]}
