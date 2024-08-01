@@ -26,10 +26,6 @@ const DissolveExperience: FC = () => {
   const [visibleItem, setVisibleItem] = useState(itemDisplayed);
   const onFadeOut = () => setVisibleItem(itemDisplayed);
 
-  /* boxMaterial.onBeforeCompile = (shader) => {
-    console.log(shader);
-  }; */
-
   return (
     <>
       <OrbitControls />

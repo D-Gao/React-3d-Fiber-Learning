@@ -21,7 +21,8 @@ const fragmentShader = patchShaders(/* glsl */ `
   uniform float uThickness;
   uniform vec3 uColor;
   uniform float uProgress;
-  
+  uniform sampler2D uTexture;
+  uniform bool useTexture;
   
   void main() {
     //gln_tFBMOpts opts = gln_tFBMOpts(1.0, 0.3, 2.0, 5.0, 1.0, 5, false, false);
@@ -33,9 +34,12 @@ const fragmentShader = patchShaders(/* glsl */ `
 
     float alpha = step(1.0 - progress, noise);
     float border = step((1.0 - progress) - uThickness, noise) - alpha; */
-    
-   /*  csm_DiffuseColor.a = alpha + border; */
-    csm_DiffuseColor = vec4(1.0, 1.0, 1.0, 1.0);
+
+    vec4 finalTexture = texture2D(uTexture, vUv);
+    vec4 color = mix(vec4(1.0, 1.0, 1.0, 1.0) , finalTexture , float(useTexture));
+
+    csm_DiffuseColor = color;
+  
   }`) as string;
 
 interface Props {
@@ -45,11 +49,13 @@ interface Props {
   intensity?: number;
   duration?: number;
   visible: boolean;
+  texture: THREE.Texture | null;
   /*  onFadeOut: () => void; */
 }
 
 export function DissolveMaterial({
   baseMaterial,
+  texture = new THREE.Texture(),
   thickness = 0.1,
   color = "#eb5a13",
   intensity = 50,
@@ -57,16 +63,21 @@ export function DissolveMaterial({
   visible = true,
   /* onFadeOut, */
 }: Props) {
-  /* const uniforms = React.useRef({
+  const uniforms = React.useRef({
     uThickness: { value: 0 },
     uColor: { value: new THREE.Color(color).multiplyScalar(20) },
     uProgress: { value: 0 },
-  }); */
+    uTexture: { value: texture },
+    useTexture: { value: false },
+  });
 
-  /* React.useEffect(() => {
-    uniforms.current.uThickness.value = thickness;
+  React.useEffect(() => {
+    if (texture != new THREE.Texture())
+      uniforms.current.useTexture.value = true;
+    else uniforms.current.useTexture.value = false;
+    uniforms.current.uTexture.value = texture;
     uniforms.current.uColor.value.set(color).multiplyScalar(intensity);
-  }, [thickness, color, intensity]); */
+  }, [texture, color]);
 
   /* useFrame((_state, delta) => {
     easing.damp(
@@ -86,7 +97,7 @@ export function DissolveMaterial({
         baseMaterial={baseMaterial}
         vertexShader={vertexShader}
         fragmentShader={fragmentShader}
-        /* uniforms={uniforms.current} */
+        uniforms={uniforms.current}
         toneMapped={true}
         transparent
       />

@@ -4,7 +4,7 @@ Command: npx gltfjsx@6.4.1 public/models/su7.glb -o src/models/CarMi.tsx --types
 */
 
 import * as THREE from "three";
-import { useGLTF } from "@react-three/drei";
+import { useGLTF, useTexture } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
 import { DissolveMaterial } from "@/experiences/Car/DissolveMaterial";
 
@@ -79,6 +79,8 @@ type GLTFResult = GLTF & {
 export function CarMi(props: JSX.IntrinsicElements["group"]) {
   const { nodes, materials } = useGLTF("/models/su7.glb") as GLTFResult;
 
+  const [texture] = useTexture(["/textures/full_body2.jpg"]);
+
   return (
     <group {...props} dispose={null}>
       <mesh
@@ -102,6 +104,7 @@ export function CarMi(props: JSX.IntrinsicElements["group"]) {
                 baseMaterial={materials.Car_body}
                 color={""}
                 visible={true}
+                texture={texture}
               ></DissolveMaterial>
             </mesh>
             <mesh
@@ -134,6 +137,7 @@ export function CarMi(props: JSX.IntrinsicElements["group"]) {
                 baseMaterial={materials.Car_body}
                 color={""}
                 visible={true}
+                texture={texture}
               ></DissolveMaterial>
             </mesh>
             <mesh
@@ -159,6 +163,7 @@ export function CarMi(props: JSX.IntrinsicElements["group"]) {
                 baseMaterial={materials.Car_body}
                 color={""}
                 visible={true}
+                texture={texture}
               ></DissolveMaterial>
             </mesh>
             <mesh
@@ -191,6 +196,7 @@ export function CarMi(props: JSX.IntrinsicElements["group"]) {
                 baseMaterial={materials.Car_body}
                 color={""}
                 visible={true}
+                texture={texture}
               ></DissolveMaterial>
             </mesh>
             <mesh
@@ -225,6 +231,7 @@ export function CarMi(props: JSX.IntrinsicElements["group"]) {
                 baseMaterial={materials.Car_body}
                 color={""}
                 visible={true}
+                texture={texture}
               ></DissolveMaterial>
             </mesh>
             <mesh
