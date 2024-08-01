@@ -16,9 +16,6 @@ const Home = () => {
     <>
       <Canvas
         frameloop="demand"
-        onPointerMissed={(e) => {
-          console.log(e);
-        }}
         shadows
         camera={{ position: [0, 0, 30], fov: 42 }}
       >
