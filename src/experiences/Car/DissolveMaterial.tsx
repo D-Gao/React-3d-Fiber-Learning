@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { useFrame } from "@react-three/fiber";
 import { patchShaders } from "gl-noise";
-import { easing } from "maath";
 import * as React from "react";
 import * as THREE from "three";
 import CSM from "three-custom-shader-material";
@@ -56,11 +54,8 @@ interface Props {
 export function DissolveMaterial({
   baseMaterial,
   texture = new THREE.Texture(),
-  thickness = 0.1,
   color = "#eb5a13",
   intensity = 50,
-  duration = 1.2,
-  visible = true,
   /* onFadeOut, */
 }: Props) {
   const uniforms = React.useRef({

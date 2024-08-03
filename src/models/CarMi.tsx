@@ -7,6 +7,8 @@ import * as THREE from "three";
 import { useGLTF, useTexture } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
 import { DissolveMaterial } from "@/experiences/Car/DissolveMaterial";
+import { Ref, forwardRef, useRef } from "react";
+import { useFrame } from "@react-three/fiber";
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -75,20 +77,29 @@ type GLTFResult = GLTF & {
     floor: THREE.MeshPhysicalMaterial;
   };
 };
+const color = "white";
 
-export function CarMi(props: JSX.IntrinsicElements["group"]) {
+export const CarMi = forwardRef(function CarMi(
+  props: JSX.IntrinsicElements["group"],
+  ref: Ref<THREE.Group<THREE.Object3DEventMap>>
+) {
   const { nodes, materials } = useGLTF("/models/su7.glb") as GLTFResult;
 
   const [texture] = useTexture(["/textures/full_body2.jpg"]);
-
+  const wheelRef = useRef<THREE.Mesh>(null);
+  useFrame((state, delta) => {
+    /* CustomTunnelMaterial.uniforms.time.value = state.clock.getElapsedTime();
+    cubeCamera.update(state.gl, state.scene); */
+    wheelRef.current?.rotateX(state.clock.getElapsedTime() * -0.001);
+  });
   return (
-    <group {...props} dispose={null}>
-      <mesh
+    <group {...props} dispose={null} ref={ref}>
+      {/* <mesh
         geometry={nodes.topLigt.geometry}
         material={nodes.topLigt.material}
         position={[-0.007, 11.686, -0.007]}
         scale={[27.643, 0.353, 17.251]}
-      />
+      /> */}
       <group rotation={[-Math.PI / 2, 0, -Math.PI / 2]} scale={2.342}>
         <group rotation={[Math.PI / 2, 0, 0]}>
           <group rotation={[Math.PI / 2, 0, 0]} scale={0.01}>
@@ -98,14 +109,14 @@ export function CarMi(props: JSX.IntrinsicElements["group"]) {
             />
             <mesh
               geometry={nodes.Object_32.geometry}
-              /*  material={materials.Car_body} */
+              material={materials.Car_body}
             >
-              <DissolveMaterial
+              {/* <DissolveMaterial
                 baseMaterial={materials.Car_body}
-                color={""}
+                color={color}
                 visible={true}
                 texture={texture}
-              ></DissolveMaterial>
+              ></DissolveMaterial> */}
             </mesh>
             <mesh
               geometry={nodes.Object_33.geometry}
@@ -131,14 +142,14 @@ export function CarMi(props: JSX.IntrinsicElements["group"]) {
             />
             <mesh
               geometry={nodes.Object_39.geometry}
-              /* material={materials.Car_body} */
+              material={materials.Car_body}
             >
-              <DissolveMaterial
+              {/* <DissolveMaterial
                 baseMaterial={materials.Car_body}
-                color={""}
+                color={color}
                 visible={true}
                 texture={texture}
-              ></DissolveMaterial>
+              ></DissolveMaterial> */}
             </mesh>
             <mesh
               geometry={nodes.Object_40.geometry}
@@ -158,13 +169,16 @@ export function CarMi(props: JSX.IntrinsicElements["group"]) {
               geometry={nodes.Object_44.geometry}
               material={materials["M_BODY_inside.004"]}
             />
-            <mesh geometry={nodes.Object_45.geometry}>
-              <DissolveMaterial
+            <mesh
+              geometry={nodes.Object_45.geometry}
+              material={materials.Car_body}
+            >
+              {/*  <DissolveMaterial
                 baseMaterial={materials.Car_body}
-                color={""}
+                color={color}
                 visible={true}
                 texture={texture}
-              ></DissolveMaterial>
+              ></DissolveMaterial> */}
             </mesh>
             <mesh
               geometry={nodes.Object_46.geometry}
@@ -190,14 +204,14 @@ export function CarMi(props: JSX.IntrinsicElements["group"]) {
             />
             <mesh
               geometry={nodes.Object_52.geometry}
-              /*  material={materials.Car_body} */
+              material={materials.Car_body}
             >
-              <DissolveMaterial
+              {/* <DissolveMaterial
                 baseMaterial={materials.Car_body}
-                color={""}
+                color={color}
                 visible={true}
                 texture={texture}
-              ></DissolveMaterial>
+              ></DissolveMaterial> */}
             </mesh>
             <mesh
               geometry={nodes.Object_53.geometry}
@@ -225,14 +239,14 @@ export function CarMi(props: JSX.IntrinsicElements["group"]) {
           <group rotation={[Math.PI / 2, 0, 0]} scale={0.01}>
             <mesh
               geometry={nodes.Object_18.geometry}
-              /*  material={materials.Car_body} */
+              material={materials.Car_body}
             >
-              <DissolveMaterial
+              {/* <DissolveMaterial
                 baseMaterial={materials.Car_body}
-                color={""}
+                color={color}
                 visible={true}
                 texture={texture}
-              ></DissolveMaterial>
+              ></DissolveMaterial> */}
             </mesh>
             <mesh
               geometry={nodes.Object_19.geometry}
@@ -308,6 +322,7 @@ export function CarMi(props: JSX.IntrinsicElements["group"]) {
             scale={0.01}
           />
           <mesh
+            ref={wheelRef}
             geometry={nodes.Object_56.geometry}
             material={materials["M_Wheel_ALL.002"]}
             rotation={[Math.PI / 2, 0, 0]}
@@ -315,13 +330,13 @@ export function CarMi(props: JSX.IntrinsicElements["group"]) {
           />
         </group>
       </group>
-      <mesh
+      {/*  <mesh
         geometry={nodes.平面.geometry}
         material={materials.floor}
-        scale={17.686}
-      />
+        scale={[400.686, 10.686, 16.686]}
+      /> */}
     </group>
   );
-}
+});
 
 useGLTF.preload("/models/su7.glb");
