@@ -65,18 +65,12 @@ export function Wind(props: JSX.IntrinsicElements["group"]) {
   const groupRef = useRef<THREE.Group>(null);
 
   useEffect(() => {
-    /* scene.traverse((item) => {
-      if ((item as THREE.Mesh).isMesh) {
-        (item as THREE.Mesh).material = CustomWindMaterial;
-        (item as THREE.Mesh).material.uniforms.random.value = Math.random();
-      }
-    }); */
-
     console.log(groupRef.current);
 
     if (groupRef.current) {
       groupRef.current.children.forEach((item) => {
         if ((item as THREE.Mesh).isMesh) {
+          item.layers.enable(1);
           (item as THREE.Mesh).material = CustomWindMaterial;
           (
             (item as THREE.Mesh).material as THREE.ShaderMaterial

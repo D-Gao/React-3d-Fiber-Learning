@@ -89,12 +89,14 @@ const MiCarExperience: FC = () => {
     cubeRenderTarget.texture.colorSpace = SRGBColorSpace;
     /* hdrTexture.mapping = EquirectangularReflectionMapping;
     scene.environment = hdrTexture; */
-    scene.environmentIntensity = 3;
+
     scene.environment = cubeRenderTarget.texture;
+    scene.environmentIntensity = 30;
   }, [hdrTexture, scene]);
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   useFrame((state, delta) => {
+    cubeCamera.current.update(gl, scene);
     return;
     const posOffset = new Vector3(0, 0, 0);
     timeTotal.current += delta * 100;
@@ -129,8 +131,8 @@ const MiCarExperience: FC = () => {
     <>
       <CameraControls></CameraControls>
       <CarM></CarM>
-      {/*   <Wind position-y={0.1}></Wind> */}
-      <Tunnel ref={tunnelRef}></Tunnel>
+      <Wind position-y={0.1}></Wind>
+      {/*  <Tunnel ref={tunnelRef}></Tunnel> */}
     </>
   );
 };
