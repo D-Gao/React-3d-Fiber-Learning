@@ -71,26 +71,27 @@ void main(){
     vec2 uv=vUv;
 
     vec2 noiseUv=uv;
-    noiseUv.y+=-time*.5;
+    noiseUv.x+=-time*.5;
 
     vec3 col=vec3(1.);
 
     float mask=1.;
 
-    float noiseValue=noise(noiseUv*vec2(100.,3.0));
+    float noiseValue=noise(noiseUv*vec2(3.0, 100.));
     mask=noiseValue;
 
     mask=map(mask,-1.,1.,0.,1.);
 
     /* mask=pow(mask,5.); */
-    mask=pow(saturate(mask-.1),9.);
+    mask=pow(saturate(mask-.1),11.);
     mask=smoothstep(0.,.04,mask);
 
     col=colorNoise(noiseUv*vec2(10.,10.));
     /* */
 
-    mask*=smoothstep(.02,.5,uv.y)*smoothstep(.02,.5,1.-uv.y);
-    mask*=smoothstep(.01,.1,uv.x)*smoothstep(.01,.1,1.-uv.x);
+    mask*=smoothstep(.02,.5,uv.x)*smoothstep(.02,.5,1.-uv.x);
+    mask*=smoothstep(.01,.1,uv.y)*smoothstep(.01,.1,1.-uv.y);
+    //mask*=smoothstep(1.,10.,10.);
     //col=palette(mask,vec3(.5),vec3(.5),vec3(1.),vec3(0.,.33,.67));
     col*=vec3(1.5,1.,2.);
    

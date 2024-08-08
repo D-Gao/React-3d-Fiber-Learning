@@ -98,12 +98,12 @@ export function CarM(props: JSX.IntrinsicElements["group"]) {
 
   return (
     <group {...props} dispose={null}>
-      <mesh
+      {/* <mesh
         geometry={nodes.topLigt.geometry}
         material={materials.Material_18}
         position={[-0.007, 11.686, -0.007]}
         scale={[27.643, 0.353, 17.251]}
-      />
+      /> */}
       <group rotation={[-Math.PI / 2, 0, -Math.PI / 2]} scale={2.342}>
         <group rotation={[Math.PI / 2, 0, 0]}>
           <group rotation={[Math.PI / 2, 0, 0]} scale={0.01}>
@@ -314,11 +314,11 @@ export function CarM(props: JSX.IntrinsicElements["group"]) {
           />
         </group>
       </group>
-      <mesh
+      {/*  <mesh
         geometry={nodes.平面.geometry}
         material={materials.floor}
         scale={17.686}
-      />
+      /> */}
     </group>
   );
 }

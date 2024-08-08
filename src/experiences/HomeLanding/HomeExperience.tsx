@@ -103,7 +103,7 @@ export const HomeExperience = () => {
 
   return (
     <>
-      <OrbitControls />
+      {/* <OrbitControls /> */}
       <CameraControls ref={controls} />
       <mesh ref={meshFitCameraHome} position-z={1.5} visible={false}>
         <boxGeometry args={[7.5, 2, 2]} />
