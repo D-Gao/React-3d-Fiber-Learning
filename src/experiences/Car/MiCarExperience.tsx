@@ -85,14 +85,16 @@ const MiCarExperience: FC = () => {
   const timeTotal = useRef(0);
 
   useEffect(() => {
+    gl.localClippingEnabled = true; // enable
+
     cubeCamera.current.layers.set(1);
     cubeRenderTarget.texture.colorSpace = SRGBColorSpace;
-    /* hdrTexture.mapping = EquirectangularReflectionMapping;
-    scene.environment = hdrTexture; */
+    hdrTexture.mapping = EquirectangularReflectionMapping;
+    scene.environment = hdrTexture;
 
-    scene.environment = cubeRenderTarget.texture;
-    scene.environmentIntensity = 30;
-  }, [hdrTexture, scene]);
+    /*  scene.environment = cubeRenderTarget.texture;
+    scene.environmentIntensity = 30; */
+  }, [hdrTexture, scene, gl]);
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   useFrame((state, delta) => {
@@ -131,7 +133,7 @@ const MiCarExperience: FC = () => {
     <>
       <CameraControls></CameraControls>
       <CarM></CarM>
-      <Wind position-y={0.1}></Wind>
+      {/* <Wind position-y={0.1}></Wind> */}
       {/*  <Tunnel ref={tunnelRef}></Tunnel> */}
     </>
   );

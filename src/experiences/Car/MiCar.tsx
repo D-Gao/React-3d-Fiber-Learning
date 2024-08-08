@@ -22,14 +22,14 @@ const MiCar: FC = () => {
       >
         <color attach="background" args={["#000000"]} />
         <MiCarExperience></MiCarExperience>
-        <EffectComposer>
+        {/*  <EffectComposer>
           <Bloom
             mipmapBlur
             intensity={1.2}
             blendFunction={POSTPROCESSING.BlendFunction.ADD}
             luminanceThreshold={0.1}
           />
-        </EffectComposer>
+        </EffectComposer> */}
       </Canvas>
       <Loader />
     </>

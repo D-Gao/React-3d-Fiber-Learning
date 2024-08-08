@@ -4,10 +4,16 @@ Command: npx gltfjsx@6.4.1 public/models/car.glb -o src/models/CarM.tsx --typesc
 */
 
 import * as THREE from "three";
-import React, { useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
 import { useFrame } from "@react-three/fiber";
+import { instance } from "three/examples/jsm/nodes/Nodes.js";
+import gsap from "gsap";
+import Curves from "@/assets/output_file.json";
+import vertexShader from "@/experiences/Car/shaders/line/vertexShader.glsl";
+import fragmentShader from "@/experiences/Car/shaders/line/fragmentShader.glsl";
+import { useControls } from "leva";
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -87,6 +93,88 @@ export function CarM(props: JSX.IntrinsicElements["group"]) {
 
   const wheelRef = useRef<THREE.Group<THREE.Object3DEventMap>>(null);
 
+  const carBody = useRef<THREE.Group<THREE.Object3DEventMap>>(null);
+
+  const ref = useRef<THREE.Group<THREE.Object3DEventMap>>(null);
+
+  const clip = useRef(new THREE.Plane());
+  const clip2 = useRef(new THREE.Plane());
+
+  const { CONSTANT } = useControls("Clip Plane Control", {
+    CONSTANT: { value: 8, min: -10, max: 8, step: 0.1 },
+    //RUN_SPEED: { value: 1.6, min: 0.2, max: 12, step: 0.1 },
+  });
+
+  useEffect(() => {
+    clip.current.constant = CONSTANT;
+    clip2.current.constant = -CONSTANT;
+  }, [CONSTANT]);
+
+  const material = useRef(
+    new THREE.ShaderMaterial({
+      side: THREE.DoubleSide,
+      uniforms: {
+        vTime: { value: 0 },
+        color: { value: new THREE.Color(0.2, 0.8, 1) },
+        vProgress: { value: 0.8 },
+        uSize: { value: 7 },
+      },
+      transparent: true,
+      // depthTest: false,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      vertexShader: vertexShader,
+      fragmentShader: fragmentShader,
+      clippingPlanes: [clip2.current],
+      clipping: true,
+    })
+  );
+  const initCurves = () => {
+    const curves: THREE.CatmullRomCurve3[] = [];
+    Curves.points.forEach((path) => {
+      const points = [];
+      // eslint-disable-next-line @typescript-eslint/prefer-for-of
+      for (let i = 0; i < path.length; i++) {
+        points.push(new THREE.Vector3(path[i].x, path[i].y, path[i].z));
+      }
+      const tempcurve = new THREE.CatmullRomCurve3(points);
+      curves.push(tempcurve);
+    });
+
+    const radius = 0.005;
+    const radialSegments = 3;
+    curves.forEach((path, index) => {
+      const geometry = new THREE.TubeGeometry(
+        path,
+        32,
+        radius,
+        radialSegments,
+        false
+      );
+      const line = new THREE.Mesh(geometry, material.current);
+      ref.current!.scale.set(1, 1, 1);
+      ref.current!.position.y = 0.0;
+      // line.scale.set(0.1, 0.1, 0.1)
+      ref.current!.add(line);
+      console.log(ref.current);
+    });
+  };
+
+  useEffect(() => {
+    clip.current.normal.set(-1, 0, 0);
+    clip2.current.normal.set(1, 0, 0);
+    /* clip.current.constant = -8; */
+
+    carBody.current?.traverse((item) => {
+      if (item instanceof THREE.Mesh) {
+        (item.material as THREE.MeshStandardMaterial).clippingPlanes = [
+          clip.current,
+        ];
+      }
+    });
+    initCurves();
+  }, []);
+
   useFrame((state, delta) => {
     /* CustomTunnelMaterial.uniforms.time.value = state.clock.getElapsedTime();
     cubeCamera.update(state.gl, state.scene); */
@@ -94,17 +182,25 @@ export function CarM(props: JSX.IntrinsicElements["group"]) {
     wheelRef.current?.children.forEach((item) => {
       (item as THREE.Mesh).rotateX(delta * -10);
     });
+
+    material.current.uniforms.vTime.value += delta;
   });
 
   return (
     <group {...props} dispose={null}>
-      {/* <mesh
-        geometry={nodes.topLigt.geometry}
-        material={materials.Material_18}
-        position={[-0.007, 11.686, -0.007]}
-        scale={[27.643, 0.353, 17.251]}
-      /> */}
-      <group rotation={[-Math.PI / 2, 0, -Math.PI / 2]} scale={2.342}>
+      <group
+        {...props}
+        dispose={null}
+        ref={ref}
+        /*  rotation={[-Math.PI / 2, 0, -Math.PI / 2]} */
+        scale={0.1}
+      ></group>
+
+      <group
+        rotation={[-Math.PI / 2, 0, -Math.PI / 2]}
+        scale={2.342}
+        ref={carBody}
+      >
         <group rotation={[Math.PI / 2, 0, 0]}>
           <group rotation={[Math.PI / 2, 0, 0]} scale={0.01}>
             <mesh
@@ -314,6 +410,18 @@ export function CarM(props: JSX.IntrinsicElements["group"]) {
           />
         </group>
       </group>
+      {/* <mesh
+        geometry={nodes.topLigt.geometry}
+        material={materials.Material_18}
+        position={[-0.007, 11.686, -0.007]}
+        scale={[27.643, 0.353, 17.251]}
+      /> */}
+      {/* <mesh rotation={[0, -Math.PI / 2, 0]} >
+        {" "}
+        <planeGeometry args={[10, 10]}></planeGeometry>
+        <meshBasicMaterial side={THREE.DoubleSide}></meshBasicMaterial>
+      </mesh> */}
+
       {/*  <mesh
         geometry={nodes.平面.geometry}
         material={materials.floor}
