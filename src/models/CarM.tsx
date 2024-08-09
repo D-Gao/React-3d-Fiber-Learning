@@ -282,7 +282,8 @@ export function CarM(props: JSX.IntrinsicElements["group"]) {
       lineGeometry,
       new THREE.LineBasicMaterial()
     );
-    outlineLines.material.color.set(0x00acc1);
+    const colorTemp = new THREE.Color(0x00acc1).multiplyScalar(30);
+    outlineLines.material.color.set(colorTemp);
     outlineLines.frustumCulled = false;
     outlineLines.renderOrder = 3;
 
@@ -344,10 +345,7 @@ export function CarM(props: JSX.IntrinsicElements["group"]) {
   }, []);
 
   useFrame((_, defaultDelta) => {
-    (outlineLines.current?.material as THREE.LineBasicMaterial).color.set(
-      0xffffff
-    );
-    const delta = Math.min(defaultDelta, 0.03);
+    /* const delta = Math.min(defaultDelta, 0.03); */
 
     const clippingPlane = new THREE.Plane();
     clippingPlane.copy(clip.current);

@@ -3,8 +3,8 @@ import { Canvas } from "@react-three/fiber";
 import { FC } from "react";
 import MiCarExperience from "./MiCarExperience";
 import * as THREE from "three";
-/* import { Bloom, EffectComposer } from "@react-three/postprocessing";
-import * as POSTPROCESSING from "postprocessing"; */
+import { Bloom, EffectComposer } from "@react-three/postprocessing";
+import * as POSTPROCESSING from "postprocessing";
 import { Perf } from "r3f-perf";
 
 const MiCar: FC = () => {
@@ -23,14 +23,14 @@ const MiCar: FC = () => {
       >
         <color attach="background" args={["#000000"]} />
         <MiCarExperience></MiCarExperience>
-        {/*  <EffectComposer>
+        <EffectComposer>
           <Bloom
             mipmapBlur
             intensity={1.2}
             blendFunction={POSTPROCESSING.BlendFunction.ADD}
             luminanceThreshold={0.1}
           />
-        </EffectComposer> */}
+        </EffectComposer>
         <Perf position="top-left" />
       </Canvas>
       <Loader />
