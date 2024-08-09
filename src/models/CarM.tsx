@@ -7,13 +7,14 @@ import * as THREE from "three";
 import React, { useEffect, useMemo, useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import { instance } from "three/examples/jsm/nodes/Nodes.js";
 import gsap from "gsap";
 import Curves from "@/assets/output_file.json";
 import vertexShader from "@/experiences/Car/shaders/line/vertexShader.glsl";
 import fragmentShader from "@/experiences/Car/shaders/line/fragmentShader.glsl";
 import { useControls } from "leva";
+import { BufferGeometryUtils } from "three/examples/jsm/Addons.js";
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -89,12 +90,10 @@ type GLTFResult = GLTF & {
 };
 
 export function CarM(props: JSX.IntrinsicElements["group"]) {
-  const { nodes, materials } = useGLTF("/models/car.glb") as GLTFResult;
-
+  const state = useThree();
+  const { nodes, materials, scene } = useGLTF("/models/car.glb") as GLTFResult;
   const wheelRef = useRef<THREE.Group<THREE.Object3DEventMap>>(null);
-
   const carBody = useRef<THREE.Group<THREE.Object3DEventMap>>(null);
-
   const ref = useRef<THREE.Group<THREE.Object3DEventMap>>(null);
 
   const clip = useRef(new THREE.Plane());
@@ -156,7 +155,7 @@ export function CarM(props: JSX.IntrinsicElements["group"]) {
       ref.current!.position.y = 0.0;
       // line.scale.set(0.1, 0.1, 0.1)
       ref.current!.add(line);
-      console.log(ref.current);
+      //console.log(ref.current);
     });
   };
 
@@ -185,6 +184,88 @@ export function CarM(props: JSX.IntrinsicElements["group"]) {
 
     material.current.uniforms.vTime.value += delta;
   });
+
+  //outline helper functions
+
+  //create the merged mesh from the original one
+  function dealModel() {
+    let mergedGeometry = new THREE.BufferGeometry();
+    // 存储所有模型的几何体
+    const geometries: THREE.BufferGeometry[] = [];
+    scene.traverse((item) => {
+      if (item instanceof THREE.Mesh) {
+        console.log(item);
+        if (item.name === "平面" || item.name === "topLigt") return;
+
+        const instanceGeo = (item as THREE.Mesh).geometry.clone();
+        // it is necessary since geometry has no transformation data
+        // and it will result in a wrong merge
+        instanceGeo.applyMatrix4(item.matrix);
+        if (!instanceGeo.getAttribute("uv1")) {
+          // Create a default uv1 attribute (can be zeros or a copy of 'uv')
+          const uv1Array = new Float32Array(
+            instanceGeo.attributes.position.count * 2
+          );
+          instanceGeo.setAttribute(
+            "uv1",
+            new THREE.BufferAttribute(uv1Array, 2)
+          );
+        }
+        if (!instanceGeo.getAttribute("uv2")) {
+          // Create a default uv1 attribute (can be zeros or a copy of 'uv')
+          const uv1Array = new Float32Array(
+            instanceGeo.attributes.position.count * 2
+          );
+          instanceGeo.setAttribute(
+            "uv2",
+            new THREE.BufferAttribute(uv1Array, 2)
+          );
+        }
+        if (!instanceGeo.getAttribute("uv3")) {
+          // Create a default uv1 attribute (can be zeros or a copy of 'uv')
+          const uv1Array = new Float32Array(
+            instanceGeo.attributes.position.count * 2
+          );
+          instanceGeo.setAttribute(
+            "uv3",
+            new THREE.BufferAttribute(uv1Array, 2)
+          );
+        }
+        geometries.push(instanceGeo);
+      }
+    });
+
+    // 合并几何体
+    if (geometries.length > 0) {
+      console.log(geometries);
+      mergedGeometry = BufferGeometryUtils.mergeGeometries(geometries);
+    }
+
+    // 创建一个新的 Mesh 对象并设置合并后的几何体
+    const mergedMesh = new THREE.Mesh(
+      mergedGeometry,
+      new THREE.MeshBasicMaterial({ color: "0xffff00" })
+    );
+    mergedMesh.scale.set(0.01 * 2.342, 0.01 * 2.342, 0.01 * 2.342);
+    //mergedMesh.quaternion.identity();
+    mergedMesh.rotation.set(Math.PI / 2, 0, Math.PI / 2);
+    mergedMesh.position.y = 0.0;
+    mergedMesh.applyMatrix4(scene.matrix);
+    state.scene.add(mergedMesh);
+
+    return mergedMesh;
+  }
+
+  //outline
+  useEffect(() => {
+    const mergedMesh = dealModel();
+
+    return () => {
+      mergedMesh.geometry.dispose();
+      mergedMesh.material.dispose();
+      state.scene.remove(mergedMesh);
+    };
+  }, []);
 
   return (
     <group {...props} dispose={null}>
