@@ -309,19 +309,19 @@ export function CarM(props: JSX.IntrinsicElements["group"]) {
       new THREE.MeshBasicMaterial({
         wireframe: false,
         transparent: true,
-        opacity: 0.01,
+        opacity: 0.1,
         depthWrite: false,
       })
     );
     colliderMesh.renderOrder = 2;
     colliderMesh.position.copy(model.position);
-    colliderMesh.rotation.copy(model.rotation);
+    //colliderMesh.rotation.copy(model.rotation);
 
     colliderMesh.visible = false;
     colliderMesh.scale.copy(model.scale);
 
-    const bvhHelper = new MeshBVHHelper(colliderMesh, 10);
-    bvhHelper.depth = 10;
+    const bvhHelper = new MeshBVHHelper(colliderMesh, 1);
+    bvhHelper.depth = 1;
     bvhHelper.update();
 
     return { colliderBvh, colliderMesh, bvhHelper };
@@ -349,7 +349,10 @@ export function CarM(props: JSX.IntrinsicElements["group"]) {
     );
     const delta = Math.min(defaultDelta, 0.03);
 
-    const clippingPlane = clip.current;
+    const clippingPlane = new THREE.Plane();
+    clippingPlane.copy(clip.current);
+    clippingPlane.constant = CONSTANT * 42.7;
+    //clip.current.constant = -5;
     //clippingPlane.normal.set(0, 0, this.params.invert ? 1 : -1);
     //clippingPlane.constant = 0;
     //clippingPlane.applyMatrix4(this.planeMesh.matrixWorld);
@@ -367,7 +370,7 @@ export function CarM(props: JSX.IntrinsicElements["group"]) {
         /* if (!this.params.useBVH) {
             return CONTAINED;
           } */
-        return clip.current.intersectsBox(box);
+        return clippingPlane.intersectsBox(box);
       },
       intersectsTriangle: (tri) => {
         // check each triangle edge to see if it intersects with the plane. If so then
@@ -375,7 +378,7 @@ export function CarM(props: JSX.IntrinsicElements["group"]) {
         let count = 0;
         tempLine.start.copy(tri.a);
         tempLine.end.copy(tri.b);
-        if (clip.current.intersectLine(tempLine, tempVector)) {
+        if (clippingPlane.intersectLine(tempLine, tempVector)) {
           posAttr?.setXYZ(index, tempVector.x, tempVector.y, tempVector.z);
           index++;
           count++;
@@ -383,7 +386,7 @@ export function CarM(props: JSX.IntrinsicElements["group"]) {
 
         tempLine.start.copy(tri.b);
         tempLine.end.copy(tri.c);
-        if (clip.current.intersectLine(tempLine, tempVector)) {
+        if (clippingPlane.intersectLine(tempLine, tempVector)) {
           posAttr?.setXYZ(index, tempVector.x, tempVector.y, tempVector.z);
           count++;
           index++;
@@ -391,7 +394,7 @@ export function CarM(props: JSX.IntrinsicElements["group"]) {
 
         tempLine.start.copy(tri.c);
         tempLine.end.copy(tri.a);
-        if (clip.current.intersectLine(tempLine, tempVector)) {
+        if (clippingPlane.intersectLine(tempLine, tempVector)) {
           posAttr?.setXYZ(index, tempVector.x, tempVector.y, tempVector.z);
           count++;
           index++;
