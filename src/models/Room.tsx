@@ -47,6 +47,8 @@ export function Room(props: JSX.IntrinsicElements["group"]) {
   const floor = useRef<THREE.Mesh>(null);
 
   useEffect(() => {
+    /* (floor.current!.material as THREE.MeshPhysicalMaterial).envMap = hdrTexture;
+    (floor.current!.material as THREE.MeshPhysicalMaterial).envMapIntensity = 0; */
     materials.light.side = THREE.DoubleSide;
     materials.light.transparent = true;
     //materials.light.opacity = 1;
@@ -54,20 +56,37 @@ export function Room(props: JSX.IntrinsicElements["group"]) {
     materials.light.toneMapped = false;
     materials.light.emissiveIntensity = 0.9;
 
-    /* materials.floor.aoMap = aoMap;
-    materials.floor.lightMap = lightMap; */
+    materials.floor.aoMap = aoMap;
+    materials.floor.aoMap.channel = 1;
+    materials.floor.aoMap.flipY = false;
+    materials.floor.aoMap.colorSpace = THREE.LinearSRGBColorSpace;
+
+    materials.floor.lightMap = lightMap;
+    materials.floor.lightMap.channel = 1;
+    materials.floor.lightMap.flipY = false;
+    materials.floor.lightMap.colorSpace = THREE.LinearSRGBColorSpace;
+
     materials.floor.normalMap = normalMap;
+    materials.floor.normalMap.wrapS = THREE.RepeatWrapping;
+    materials.floor.normalMap.wrapT = THREE.RepeatWrapping;
+    materials.floor.normalMap.flipY = false;
+    materials.floor.normalMap.colorSpace = THREE.LinearSRGBColorSpace;
+
     materials.floor.roughnessMap = roughnessMap;
+    materials.floor.roughnessMap.wrapS = THREE.RepeatWrapping;
+    materials.floor.roughnessMap.wrapT = THREE.RepeatWrapping;
+    materials.floor.roughnessMap.flipY = false;
+    materials.floor.roughnessMap.colorSpace = THREE.LinearSRGBColorSpace;
+
+    materials.floor.envMapIntensity = 0;
     //materials.floor.envMapIntensity = 0;
-    /*  (floor.current!.material as THREE.MeshPhysicalMaterial).envMap = hdrTexture;
-    (floor.current!.material as THREE.MeshPhysicalMaterial).envMapIntensity = 0; */
 
     /* (floor.current!.material as THREE.MeshPhysicalMaterial).aoMap!.repeat =
       new THREE.Vector2(2, 2); */
-    (floor.current!.material as THREE.MeshPhysicalMaterial).envMapIntensity = 0;
+    /* (floor.current!.material as THREE.MeshPhysicalMaterial).envMapIntensity = 0;
     console.log(floor.current!.geometry.attributes.uv);
     console.log(floor.current!.geometry.attributes.uv2);
-    console.log(floor.current);
+    console.log(floor.current); */
 
     //nodes.light001.rotateX(Math.PI / 3);
   }, []);
@@ -89,9 +108,9 @@ export function Room(props: JSX.IntrinsicElements["group"]) {
         ref={floor}
         geometry={nodes.ReflecFloor.geometry}
         material={materials.floor}
-        position={[19, 0, -2.5]}
+        position={[28, 0, 11]}
         rotation={[Math.PI, 0, Math.PI]}
-        scale={[0.7, 10, 0.2]}
+        scale={2.342}
       />
     </group>
   );

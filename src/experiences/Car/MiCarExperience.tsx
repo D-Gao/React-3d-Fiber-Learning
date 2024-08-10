@@ -91,8 +91,8 @@ const MiCarExperience: FC = () => {
     hdrTexture.mapping = EquirectangularReflectionMapping;
     scene.environment = hdrTexture;
 
-    scene.environment = cubeRenderTarget.texture;
-    scene.environmentIntensity = 10;
+    //scene.environment = cubeRenderTarget.texture;
+    //scene.environmentIntensity = 10;
   }, [hdrTexture, scene, gl]);
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -133,8 +133,8 @@ const MiCarExperience: FC = () => {
       <CameraControls></CameraControls>
       <CarM></CarM>
       {/* <Wind position-y={0.1}></Wind> */}
-      <Tunnel ref={tunnelRef}></Tunnel>
-      {/*  <Room></Room> */}
+      {/* <Tunnel ref={tunnelRef}></Tunnel> */}
+      <Room></Room>
     </>
   );
 };
