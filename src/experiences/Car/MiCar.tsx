@@ -26,7 +26,7 @@ const MiCar: FC = () => {
         <EffectComposer>
           <Bloom
             mipmapBlur
-            intensity={1.2}
+            intensity={2.7}
             blendFunction={POSTPROCESSING.BlendFunction.ADD}
             luminanceThreshold={0.1}
           />

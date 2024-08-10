@@ -345,6 +345,7 @@ export function CarM(props: JSX.IntrinsicElements["group"]) {
   }, []);
 
   useFrame((_, defaultDelta) => {
+    return;
     /* const delta = Math.min(defaultDelta, 0.03); */
 
     const clippingPlane = new THREE.Plane();

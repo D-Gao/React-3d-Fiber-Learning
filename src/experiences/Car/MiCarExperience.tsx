@@ -22,6 +22,7 @@ import { createNoise2D } from "simplex-noise";
 import gsap from "gsap";
 import { Tunnel } from "@/models/Tunnel";
 import { Wind } from "@/models/Wind";
+import { Room } from "@/models/Room";
 
 const noise2d = createNoise2D();
 
@@ -45,8 +46,6 @@ export const CustomTunnelMaterial = new ShaderMaterial({
   fragmentShader: fragmentShader,
   toneMapped: false,
 });
-
-const cylinder = new CylinderGeometry(20, 20, 1500, 32, 1, true);
 
 const fbm = ({
   octave = 1,
@@ -92,8 +91,8 @@ const MiCarExperience: FC = () => {
     hdrTexture.mapping = EquirectangularReflectionMapping;
     scene.environment = hdrTexture;
 
-    /*  scene.environment = cubeRenderTarget.texture;
-    scene.environmentIntensity = 30; */
+    scene.environment = cubeRenderTarget.texture;
+    scene.environmentIntensity = 10;
   }, [hdrTexture, scene, gl]);
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -134,7 +133,8 @@ const MiCarExperience: FC = () => {
       <CameraControls></CameraControls>
       <CarM></CarM>
       {/* <Wind position-y={0.1}></Wind> */}
-      {/*  <Tunnel ref={tunnelRef}></Tunnel> */}
+      <Tunnel ref={tunnelRef}></Tunnel>
+      {/*  <Room></Room> */}
     </>
   );
 };
