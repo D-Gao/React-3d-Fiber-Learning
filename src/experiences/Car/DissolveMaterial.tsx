@@ -33,10 +33,10 @@ const fragmentShader = patchShaders(/* glsl */ `
     float alpha = step(1.0 - progress, noise);
     float border = step((1.0 - progress) - uThickness, noise) - alpha; */
 
-    vec4 finalTexture = texture2D(uTexture, vUv);
-    vec4 color = mix(vec4(1.0, 1.0, 1.0, 1.0) , finalTexture , float(useTexture));
+    //vec4 finalTexture = texture2D(uTexture, vUv);
+    //vec4 color = mix(vec4(1.0, 1.0, 1.0, 1.0) , finalTexture , float(useTexture));
 
-    csm_DiffuseColor = color;
+    csm_DiffuseColor = vec4(1.0, 1.0, 1.0, .5);
   
   }`) as string;
 
