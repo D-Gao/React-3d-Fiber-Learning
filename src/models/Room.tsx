@@ -25,9 +25,7 @@ type GLTFResult = GLTF & {
 /* type RoomProps = JSX.IntrinsicElements["group"] & THREE.Texture; */
 
 export function Room(props: any) {
-  const { nodes, materials } = useGLTF(
-    "/models/sm_startroomraw.glb"
-  ) as GLTFResult;
+  const { nodes, materials } = useGLTF("/models/room.glb") as GLTFResult;
 
   const [aoMap, lightMap, normalMap, roughnessMap] = useTexture([
     "/textures/su7/t_startroom_ao.raw.jpg",
@@ -62,45 +60,20 @@ export function Room(props: any) {
     materials.light.toneMapped = false;
     materials.light.emissiveIntensity = 0.9;
 
-    materials.floor.aoMap = aoMap;
-    materials.floor.aoMap.channel = 1;
-    materials.floor.aoMap.flipY = false;
-    materials.floor.aoMap.colorSpace = THREE.LinearSRGBColorSpace;
-    console.log(props);
-
-    materials.floor.lightMap = lightMap;
-    materials.floor.lightMap.flipY = false;
-    materials.floor.lightMap.channel = 1;
-    /* materials.floor.lightMap.channel = 1;
-    materials.floor.lightMap.flipY = false;
-    materials.floor.lightMap.colorSpace = THREE.LinearSRGBColorSpace; */
-
-    materials.floor.normalMap = normalMap;
-    materials.floor.normalMap.wrapS = THREE.RepeatWrapping;
-    materials.floor.normalMap.wrapT = THREE.RepeatWrapping;
-    materials.floor.normalMap.flipY = false;
-    materials.floor.normalMap.colorSpace = THREE.LinearSRGBColorSpace;
-
-    materials.floor.roughnessMap = roughnessMap;
-    materials.floor.roughnessMap.wrapS = THREE.RepeatWrapping;
-    materials.floor.roughnessMap.wrapT = THREE.RepeatWrapping;
-    materials.floor.roughnessMap.flipY = false;
-    materials.floor.roughnessMap.colorSpace = THREE.LinearSRGBColorSpace;
-
     //lightMap.repeat.set(0.25, 0.75); // Use only the top half of the texture
     //lightMap.offset.set(0, 0); // Shift the texture up to show the top half
-    /* floorRef.current!.lightMap = lightMap;
-    floorRef.current!.lightMap.channel = 0;
+    lightMap.minFilter = THREE.LinearFilter;
+    lightMap.magFilter = THREE.LinearFilter;
+    floorRef.current!.lightMap = lightMap;
+    floorRef.current!.lightMap.channel = 1;
 
     floorRef.current!.lightMap.flipY = false;
-    floorRef.current!.lightMap.colorSpace = THREE.LinearSRGBColorSpace; */
+    floorRef.current!.lightMap.colorSpace = THREE.LinearSRGBColorSpace;
 
-    //floorRef.current!.lightMap.repeat.set(1, 0.5); // Adjust the repeat values as needed
-
-    /*  floorRef.current!.aoMap = aoMap;
-    floorRef.current!.aoMap.channel = 0;
+    floorRef.current!.aoMap = aoMap;
+    floorRef.current!.aoMap.channel = 1;
     floorRef.current!.aoMap.flipY = false;
-    floorRef.current!.aoMap.colorSpace = THREE.LinearSRGBColorSpace; */
+    floorRef.current!.aoMap.colorSpace = THREE.LinearSRGBColorSpace;
 
     floorRef.current!.normalMap = normalMap;
     floorRef.current!.normalMap.wrapS = THREE.RepeatWrapping;
@@ -109,34 +82,33 @@ export function Room(props: any) {
     floorRef.current!.normalMap.colorSpace = THREE.LinearSRGBColorSpace;
     //floorRef.current!.normalMap = normalMap;
 
-    /* floorRef.current!.roughnessMap = roughnessMap;
+    floorRef.current!.roughnessMap = roughnessMap;
     floorRef.current!.roughnessMap.wrapS = THREE.RepeatWrapping;
     floorRef.current!.roughnessMap.wrapT = THREE.RepeatWrapping;
     floorRef.current!.roughnessMap.flipY = false;
-    floorRef.current!.roughnessMap.colorSpace = THREE.LinearSRGBColorSpace; */
+    floorRef.current!.roughnessMap.colorSpace = THREE.LinearSRGBColorSpace;
   }, [props.texture]);
   return (
     <group {...props} dispose={null}>
-      {/* <mesh
+      <mesh
         geometry={nodes.light001.geometry}
         position={[0, 5.872, 0]}
-        rotation={[-Math.PI, 0, Math.PI]}
+        rotation={[Math.PI / 2, Math.PI, 0]}
         scale={2}
         material={materials.light}
-      ></mesh> */}
-      {/*  <mesh
+      ></mesh>
+      <mesh
         ref={floor}
         geometry={nodes.ReflecFloor.geometry}
         material={materials.floor}
-        position={[-26, 0, -10]}
-        rotation={[0, 0, 0]}
+        position={[28, 0, 10.9]}
+        rotation={[Math.PI / 2, Math.PI, 0]}
         scale={2.342}
       >
-       
         <MeshReflectorMaterial
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           ref={floorRef as React.Ref<any>}
-          //color={new THREE.Color(1, 1, 1)}
+          color={new THREE.Color(1, 1, 1)}
           blur={[10, 10]}
           mixBlur={0}
           mixStrength={1}
@@ -147,31 +119,6 @@ export function Room(props: any) {
           minDepthThreshold={0.9}
           maxDepthThreshold={1}
           depthToBlurRatioBias={0.25}
-          //envMapIntensity={1}
-        />
-      </mesh> */}
-
-      <mesh
-        rotation={[Math.PI / 2, Math.PI, 0]}
-        ref={floor}
-        position={[-5.5, 0, 5.5]}
-        scale={0.8}
-      >
-        <planeGeometry args={[100, 100]}></planeGeometry>
-        <MeshReflectorMaterial
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          ref={floorRef as React.Ref<any>}
-          /* color={new THREE.Color(1, 1, 1)} */
-          blur={[10, 10]}
-          mixBlur={0.5}
-          mixStrength={1}
-          mixContrast={1}
-          resolution={512}
-          mirror={1} // Mirror environment, 0 = texture colors, 1 = pick up env colors
-          /* depthScale={0.1}
-          minDepthThreshold={0.1}
-          maxDepthThreshold={1}
-          depthToBlurRatioBias={0.25} */
           //envMapIntensity={1}
         />
       </mesh>

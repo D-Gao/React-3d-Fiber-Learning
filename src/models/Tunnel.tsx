@@ -16,7 +16,6 @@ type GLTFResult = GLTF & {
     加速002: THREE.Mesh;
   };
   materials: {};
-  animations: GLTFAction[];
 };
 
 export const Tunnel = forwardRef<
