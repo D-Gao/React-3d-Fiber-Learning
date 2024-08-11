@@ -53,7 +53,8 @@ export function Room(props: any) {
     (floor.current!.material as THREE.MeshPhysicalMaterial).envMap =
       props.texture;
 
-    (floor.current!.material as THREE.MeshPhysicalMaterial).envMapIntensity = 5;
+    (floor.current!.material as THREE.MeshPhysicalMaterial).envMapIntensity =
+      10;
     materials.light.side = THREE.DoubleSide;
     materials.light.transparent = true;
     //materials.light.opacity = 1;

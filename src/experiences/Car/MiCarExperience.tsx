@@ -98,7 +98,7 @@ const MiCarExperience: FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   useFrame((state, delta) => {
     cubeCamera.current.update(gl, scene);
-    return;
+    /* return; */
     const posOffset = new Vector3(0, 0, 0);
     timeTotal.current += delta * 100;
     posOffset.set(
