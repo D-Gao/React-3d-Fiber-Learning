@@ -140,7 +140,7 @@ const MiCarExperience: FC = () => {
           value: optimizedNightTex,
         },
         uWeight: {
-          value: 0,
+          value: 1,
         },
         uIntensity: {
           value: 1,
@@ -209,45 +209,6 @@ const MiCarExperience: FC = () => {
     });
   };
 
-  useFrame(() => {
-    return;
-    console.log(mixMaterial.current.uniforms.uWeight);
-    //mixMaterial.current.uniformsNeedUpdate = true;
-    gl.setRenderTarget(rt.current);
-    quad.current.render(gl);
-
-    /* rt.current.texture.mapping = CubeUVReflectionMapping;
-    rt.current.texture.colorSpace = SRGBColorSpace; */
-    //rt.current.texture.needsUpdate = true;
-    /*  scene.environment = rt.current.texture;
-    scene.environmentIntensity = 1; */
-    gl.setRenderTarget(null);
-
-    // rt.current.texture.needsUpdate = true;
-    //scene.environment = rt.current.texture;
-    //scene.environment.needsUpdate = true;
-
-    // Position the plane in front of the camera
-
-    /* scene.remove(planeMesh);
-    planeMesh.remove();
-    planeGeometry.dispose();
-    planeGeometry.dispose(); */
-
-    const planeGeometry = new PlaneGeometry(2, 2); // Adjust size as needed
-    const planeMaterial = new MeshBasicMaterial({ map: rt.current.texture });
-    const planeMesh = new Mesh(planeGeometry, planeMaterial);
-
-    // Add the plane to the scene
-    scene.add(planeMesh);
-
-    // Position the plane in front of the camera
-    planeMesh.position.set(0, 0, -5); // Adjust position as needed
-
-    // Render the scene
-    gl.render(scene, camera);
-  });
-
   useEffect(() => {
     gl.localClippingEnabled = true; // enable
 
@@ -313,7 +274,7 @@ const MiCarExperience: FC = () => {
       <CameraControls></CameraControls>
       <CarM />
       {/*  <Wind position-y={0.1}></Wind> */}
-      {/* <Tunnel ref={tunnelRef}></Tunnel> */}
+      {/*  <Tunnel ref={tunnelRef}></Tunnel> */}
       <Room texture={hdrNightTexture}></Room>
     </>
   );

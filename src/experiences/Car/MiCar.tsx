@@ -14,24 +14,25 @@ const MiCar: FC = () => {
         /*  frameloop="demand" */
         shadows
         dpr={[1, 2]}
-        camera={{ position: [-10, 6, -0], fov: 36, far: 10000, near: 0.01 }}
+        camera={{ position: [0, 3, -20], fov: 36, far: 10000, near: 0.01 }}
         onCreated={({ gl }) => {
           gl.outputColorSpace = THREE.SRGBColorSpace;
 
           gl.toneMapping = THREE.CineonToneMapping;
           gl.toneMappingExposure = 0.9;
+          gl.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
         }}
       >
         <color attach="background" args={["#000000"]} />
         <MiCarExperience></MiCarExperience>
-        {/* <EffectComposer>
+        <EffectComposer>
           <Bloom
             mipmapBlur
-            intensity={2.7}
+            intensity={0.8}
             blendFunction={POSTPROCESSING.BlendFunction.ADD}
             luminanceThreshold={0.1}
           />
-        </EffectComposer> */}
+        </EffectComposer>
         <Perf position="top-left" />
       </Canvas>
       <Loader />
