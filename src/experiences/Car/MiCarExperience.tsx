@@ -1,19 +1,30 @@
-import { FC, useEffect, useRef } from "react";
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+import { FC, useEffect, useMemo, useRef } from "react";
 import { CameraControls } from "@react-three/drei";
 import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
 import {
+  Color,
   CubeCamera,
+  CubeUVReflectionMapping,
   CylinderGeometry,
   EquirectangularReflectionMapping,
   Group,
   HalfFloatType,
+  LinearFilter,
   LinearMipmapLinearFilter,
   MathUtils,
+  Mesh,
+  MeshBasicMaterial,
+  MeshStandardMaterial,
+  PMREMGenerator,
+  PlaneGeometry,
   SRGBColorSpace,
   ShaderMaterial,
   Vector3,
   WebGLCubeRenderTarget,
+  WebGLRenderTarget,
 } from "three";
 import vertexShader from "@/experiences/Car/shaders/tunnel/vertexShader.glsl";
 import fragmentShader from "@/experiences/Car/shaders/tunnel/fragmentShader.glsl";
@@ -23,6 +34,9 @@ import gsap from "gsap";
 import { Tunnel } from "@/models/Tunnel";
 import { Wind } from "@/models/Wind";
 import { Room } from "@/models/Room";
+import { FullScreenQuad } from "three/examples/jsm/Addons.js";
+import dynamicEnvVertexShader from "./shaders/env/vertexSahder.glsl";
+import dynamicEnvFragmentShader from "./shaders/env/fragmentShader.glsl";
 
 const noise2d = createNoise2D();
 
@@ -66,8 +80,39 @@ const fbm = ({
 };
 
 const MiCarExperience: FC = () => {
-  const hdrTexture = useLoader(RGBELoader, "/textures/su7/t_env_light.hdr");
   const { gl, camera, scene } = useThree();
+  const hdrTexture = useLoader(RGBELoader, "/textures/su7/t_env_light.hdr");
+  const hdrNightTexture = useLoader(
+    RGBELoader,
+    "/textures/su7/t_env_night.hdr"
+  );
+
+  const optimizedLightTex = useMemo(() => {
+    // Create PMREMGenerator
+    const pmremGenerator = new PMREMGenerator(gl);
+    pmremGenerator.compileEquirectangularShader();
+
+    // Generate the prefiltered environment map
+    const envMap = pmremGenerator.fromEquirectangular(hdrTexture).texture;
+
+    pmremGenerator.dispose();
+
+    return envMap;
+  }, []);
+
+  const optimizedNightTex = useMemo(() => {
+    // Create PMREMGenerator
+    const pmremGenerator = new PMREMGenerator(gl);
+    pmremGenerator.compileEquirectangularShader();
+
+    // Generate the prefiltered environment map
+    const envMap2 = pmremGenerator.fromEquirectangular(hdrNightTexture).texture;
+
+    pmremGenerator.dispose();
+
+    return envMap2;
+  }, []);
+
   //choose wisely the type and number
   const cubeRenderTarget = new WebGLCubeRenderTarget(256, {
     type: HalfFloatType,
@@ -83,17 +128,151 @@ const MiCarExperience: FC = () => {
   const tweenedPosOffset = useRef<Vector3>(new Vector3(0, 0, 0));
   const timeTotal = useRef(0);
 
+  const mixMaterial = useRef<ShaderMaterial>(
+    new ShaderMaterial({
+      vertexShader: dynamicEnvVertexShader,
+      fragmentShader: dynamicEnvFragmentShader,
+      uniforms: {
+        uEnvmap1: {
+          value: optimizedLightTex,
+        },
+        uEnvmap2: {
+          value: optimizedNightTex,
+        },
+        uWeight: {
+          value: 0,
+        },
+        uIntensity: {
+          value: 1,
+        },
+      },
+    })
+  );
+
+  const rt = useRef<WebGLRenderTarget>(
+    new WebGLRenderTarget(
+      optimizedLightTex.source.data.width,
+      optimizedLightTex.source.data.height,
+      {
+        minFilter: LinearFilter,
+        magFilter: LinearFilter,
+        type: HalfFloatType,
+      }
+    )
+  );
+
+  const quad = useRef<FullScreenQuad>(new FullScreenQuad(mixMaterial.current));
+
+  //env change at the beginning of the scene
+  const switchEnv = () => {
+    gl.setRenderTarget(rt.current);
+    /* const meshMaterial = new MeshBasicMaterial({
+      color: new Color(0xffff00),
+    }); */
+    const params = { uweight: 1, intensity: 1 };
+
+    quad.current.render(gl);
+    rt.current.texture.mapping = CubeUVReflectionMapping; //EquirectangularReflectionMapping;
+    rt.current.texture.colorSpace = SRGBColorSpace;
+    scene.environmentIntensity = 1;
+    scene.environment = rt.current.texture; //hdrNightTexture;
+    gl.setRenderTarget(null);
+    //quad.dispose();
+    /* return; */
+    gsap.to(params, {
+      uweight: 0,
+      duration: 4,
+      delay: 0.5,
+      ease: "power2.inOut",
+      onUpdate: () => {
+        /* console.log(params.uweight);
+        mixMaterial.uniforms.uWeight.value = params.uweight; */
+        mixMaterial.current.uniforms.uWeight.value = params.uweight;
+        /* mixMaterial.current.uniformsNeedUpdate = true;
+        //invalidate();
+        gl.setRenderTarget(rt.current);
+        //const quad = new FullScreenQuad(mixMaterial.current);
+        quad.current.render(gl);
+
+        rt.current.texture.mapping = EquirectangularReflectionMapping;
+        rt.current.texture.colorSpace = SRGBColorSpace;
+        rt.current.texture.needsUpdate = true;
+        scene.environment = rt.current.texture;
+        gl.render(scene, camera);
+        //invalidate();
+        console.log(mixMaterial.current.uniforms.uWeight.value); */
+        //gl.setRenderTarget(null);
+        gl.setRenderTarget(rt.current);
+        quad.current.render(gl);
+        gl.setRenderTarget(null);
+      },
+    });
+  };
+
+  useFrame(() => {
+    return;
+    console.log(mixMaterial.current.uniforms.uWeight);
+    //mixMaterial.current.uniformsNeedUpdate = true;
+    gl.setRenderTarget(rt.current);
+    quad.current.render(gl);
+
+    /* rt.current.texture.mapping = CubeUVReflectionMapping;
+    rt.current.texture.colorSpace = SRGBColorSpace; */
+    //rt.current.texture.needsUpdate = true;
+    /*  scene.environment = rt.current.texture;
+    scene.environmentIntensity = 1; */
+    gl.setRenderTarget(null);
+
+    // rt.current.texture.needsUpdate = true;
+    //scene.environment = rt.current.texture;
+    //scene.environment.needsUpdate = true;
+
+    // Position the plane in front of the camera
+
+    /* scene.remove(planeMesh);
+    planeMesh.remove();
+    planeGeometry.dispose();
+    planeGeometry.dispose(); */
+
+    const planeGeometry = new PlaneGeometry(2, 2); // Adjust size as needed
+    const planeMaterial = new MeshBasicMaterial({ map: rt.current.texture });
+    const planeMesh = new Mesh(planeGeometry, planeMaterial);
+
+    // Add the plane to the scene
+    scene.add(planeMesh);
+
+    // Position the plane in front of the camera
+    planeMesh.position.set(0, 0, -5); // Adjust position as needed
+
+    // Render the scene
+    gl.render(scene, camera);
+  });
+
   useEffect(() => {
     gl.localClippingEnabled = true; // enable
 
     cubeCamera.current.layers.set(1);
     cubeRenderTarget.texture.colorSpace = SRGBColorSpace;
-    hdrTexture.mapping = EquirectangularReflectionMapping;
-    scene.environment = hdrTexture;
+    hdrTexture.mapping = CubeUVReflectionMapping;
+    hdrNightTexture.mapping = EquirectangularReflectionMapping;
+    //scene.environment = hdrNightTexture;
 
     //scene.environment = cubeRenderTarget.texture;
-    scene.environmentIntensity = 1;
-  }, [hdrTexture, scene, gl]);
+    //scene.environmentIntensity = 1;
+
+    /*  gsap.to(scene, {
+      environment: hdrTexture,
+      duration: 2000,
+    }); */
+
+    /* setTimeout(() => {
+      gsap.to(scene, {
+        environment: hdrTexture,
+        duration: 2000,
+      });
+    }, 1000); */
+    switchEnv();
+  }, [hdrTexture, scene, gl, gsap]);
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   useFrame((state, delta) => {
@@ -130,11 +309,12 @@ const MiCarExperience: FC = () => {
 
   return (
     <>
+      {/*  <ambientLight></ambientLight> */}
       <CameraControls></CameraControls>
-      <CarM></CarM>
+      <CarM />
       {/*  <Wind position-y={0.1}></Wind> */}
       {/* <Tunnel ref={tunnelRef}></Tunnel> */}
-      <Room texture={cubeRenderTarget.texture}></Room>
+      <Room texture={hdrNightTexture}></Room>
     </>
   );
 };

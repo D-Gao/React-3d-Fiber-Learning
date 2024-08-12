@@ -51,8 +51,7 @@ export function Room(props: any) {
     (floor.current!.material as THREE.MeshPhysicalMaterial).envMap =
       props.texture;
 
-    (floor.current!.material as THREE.MeshPhysicalMaterial).envMapIntensity =
-      10;
+    (floor.current!.material as THREE.MeshPhysicalMaterial).envMapIntensity = 0;
     materials.light.side = THREE.DoubleSide;
     materials.light.transparent = true;
     //materials.light.opacity = 1;
@@ -108,18 +107,21 @@ export function Room(props: any) {
         <MeshReflectorMaterial
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           ref={floorRef as React.Ref<any>}
-          color={new THREE.Color(1, 1, 1)}
-          blur={[10, 10]}
-          mixBlur={0}
-          mixStrength={1}
+          //color={new THREE.Color(1, 1, 1)}
+          blur={[300, 100]}
+          mixBlur={1}
+          mixStrength={10}
           mixContrast={1}
-          resolution={1024}
+          resolution={256}
           mirror={0} // Mirror environment, 0 = texture colors, 1 = pick up env colors
-          depthScale={0}
-          minDepthThreshold={0.9}
-          maxDepthThreshold={1}
+          depthScale={0.2}
+          minDepthThreshold={0.4}
+          maxDepthThreshold={1.4}
           depthToBlurRatioBias={0.25}
-          //envMapIntensity={1}
+          metalness={0}
+          roughness={0.8}
+
+          //envMapIntensity={0}
         />
       </mesh>
     </group>

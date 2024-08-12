@@ -205,7 +205,6 @@ export function CarM(props: JSX.IntrinsicElements["group"]) {
     const geometries: THREE.BufferGeometry[] = [];
     scene.traverse((item) => {
       if (item instanceof THREE.Mesh) {
-        console.log(item);
         if (item.name === "平面" || item.name === "topLigt") return;
 
         const instanceGeo = (item as THREE.Mesh).geometry.clone();
@@ -248,17 +247,16 @@ export function CarM(props: JSX.IntrinsicElements["group"]) {
 
     // 合并几何体
     if (geometries.length > 0) {
-      console.log(geometries);
       mergedGeometry = BufferGeometryUtils.mergeGeometries(geometries);
     }
 
     // 创建一个新的 Mesh 对象并设置合并后的几何体
     const mergedMesh = new THREE.Mesh(
       mergedGeometry,
-      new THREE.MeshBasicMaterial({ color: "0xffff00" })
+      new THREE.MeshBasicMaterial({ color: 0xffff00 })
     );
     mergedMesh.scale.set(0.01 * 2.342, 0.01 * 2.342, 0.01 * 2.342);
-    console.log(mergedMesh.matrix);
+
     mergedMesh.rotation.set(Math.PI / 2, 0, Math.PI / 2);
     mergedGeometry.applyMatrix4(mergedMesh.matrix);
     mergedMesh.position.y = 0.0;
@@ -296,7 +294,7 @@ export function CarM(props: JSX.IntrinsicElements["group"]) {
 
   function initBvh(model: THREE.Mesh) {
     const mergedGeometry = model.geometry.clone();
-    console.log(model.matrix);
+
     const rotationMatrix = new THREE.Matrix4().makeRotationX(Math.PI / 2);
     const rotationMatriz = new THREE.Matrix4().makeRotationZ(Math.PI / 2);
 

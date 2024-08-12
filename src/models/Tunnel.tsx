@@ -41,7 +41,7 @@ export const Tunnel = forwardRef<
         geometry={nodes.加速002.geometry}
         material={CustomTunnelMaterial}
         position={[100, 3.335, 0]}
-        scale={[215.94, 155.94, 115.94]}
+        scale={[215.94, 255.94, 215.94]}
         ref={tunnelRef}
       />
     </group>

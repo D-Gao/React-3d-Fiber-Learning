@@ -15,10 +15,11 @@ const MiCar: FC = () => {
         shadows
         dpr={[1, 2]}
         camera={{ position: [-10, 6, -0], fov: 36, far: 10000, near: 0.01 }}
-        onCreated={({ gl, camera }) => {
+        onCreated={({ gl }) => {
           gl.outputColorSpace = THREE.SRGBColorSpace;
+
           gl.toneMapping = THREE.CineonToneMapping;
-          camera.updateProjectionMatrix();
+          gl.toneMappingExposure = 0.9;
         }}
       >
         <color attach="background" args={["#000000"]} />

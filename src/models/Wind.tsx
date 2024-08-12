@@ -65,8 +65,6 @@ export function Wind(props: JSX.IntrinsicElements["group"]) {
   const groupRef = useRef<THREE.Group>(null);
 
   useEffect(() => {
-    console.log(groupRef.current);
-
     if (groupRef.current) {
       groupRef.current.children.forEach((item) => {
         if ((item as THREE.Mesh).isMesh) {

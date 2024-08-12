@@ -179,11 +179,9 @@ export function ParticleCamping() {
       <Camp
         ref={campRef}
         onPointerEnter={() => {
-          console.log("sdasdsa");
           hoverRef.current = true;
         }}
         onPointerLeave={() => {
-          console.log("leave");
           hoverRef.current = false;
         }}
       ></Camp>
