@@ -115,10 +115,10 @@ export function Room(props: any) {
         opacity: 0,
       })
       .to(
-        floor.current!.material as THREE.MeshPhysicalMaterial,
+        floorRef.current,
         {
           duration: 0.5,
-          envMapIntensity: 1,
+          mirror: 1,
         },
         "<"
       );
@@ -132,10 +132,10 @@ export function Room(props: any) {
         opacity: 1,
       })
       .to(
-        floor.current!.material as THREE.MeshPhysicalMaterial,
+        floorRef.current,
         {
           duration: 0.5,
-          envMapIntensity: 0,
+          mirror: 0,
         },
         "<"
       );

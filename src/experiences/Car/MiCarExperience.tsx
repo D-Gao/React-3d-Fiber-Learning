@@ -91,6 +91,7 @@ const MiCarExperience: FC = () => {
   );
 
   const t1 = useRef(gsap.timeline());
+  const t2 = useRef(gsap.timeline());
   const timeRef = useRef(0);
   const startRef = useRef(0);
   const endRef = useRef(0);
@@ -121,6 +122,14 @@ const MiCarExperience: FC = () => {
     //trigger animations
     tweenedPosOffset.current.set(0, 0, 0);
     startAnimation.current = true;
+    //envmap change
+    scene.environment = cubeRenderTarget.texture;
+    scene.environmentIntensity = 3;
+    t2.current.clear();
+    t2.current.to(scene, {
+      environmentIntensity: 5,
+      duration: 1,
+    });
 
     //check if the previous action is ended completely
     if (pressedEndRef.current) {
@@ -172,10 +181,18 @@ const MiCarExperience: FC = () => {
     startAnimation.current = false;
     timeTotal.current = 0;
     tweenedPosOffset.current.set(0, 0, 0);
-    console.log("tweenedPosOffset.x");
+    scene.environment = rt.current.texture;
+    scene.environmentIntensity = 0.5;
+    t2.current.clear();
+    t2.current.to(scene, {
+      environmentIntensity: 1,
+      duration: 0.5,
+    });
+
+    /* console.log("tweenedPosOffset.x");
     console.log(tweenedPosOffset.current.x);
     console.log(tweenedPosOffset.current.y);
-    console.log(tweenedPosOffset.current.z);
+    console.log(tweenedPosOffset.current.z); */
     t1.current.kill();
     //check the current distance to the camera target position
     endRef.current = cameraRef.current!.distance;
@@ -351,8 +368,9 @@ const MiCarExperience: FC = () => {
 
     cubeCamera.current.layers.set(1);
     cubeRenderTarget.texture.colorSpace = SRGBColorSpace;
-    hdrTexture.mapping = CubeUVReflectionMapping;
-    hdrNightTexture.mapping = EquirectangularReflectionMapping;
+    scene.environmentIntensity = 1;
+    /* hdrTexture.mapping = CubeUVReflectionMapping;
+    hdrNightTexture.mapping = EquirectangularReflectionMapping; */
     //scene.environment = hdrNightTexture;
 
     //scene.environment = cubeRenderTarget.texture;
@@ -363,18 +381,12 @@ const MiCarExperience: FC = () => {
       duration: 2000,
     }); */
 
-    /* setTimeout(() => {
-      gsap.to(scene, {
-        environment: hdrTexture,
-        duration: 2000,
-      });
-    }, 1000); */
     switchEnv();
   }, [hdrTexture, scene, gl, gsap]);
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   useFrame((state, delta) => {
-    //cubeCamera.current.update(gl, scene);
+    cubeCamera.current.update(gl, scene);
     if (!startAnimation.current) return;
     const posOffset = new Vector3(0, 0, 0);
 
