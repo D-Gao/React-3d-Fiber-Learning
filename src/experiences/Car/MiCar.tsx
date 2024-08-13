@@ -6,6 +6,7 @@ import * as THREE from "three";
 import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import * as POSTPROCESSING from "postprocessing";
 import { Perf } from "r3f-perf";
+import gsap from "gsap";
 
 const MiCar: FC = () => {
   return (
@@ -14,7 +15,7 @@ const MiCar: FC = () => {
         /*  frameloop="demand" */
         shadows
         dpr={[1, 2]}
-        camera={{ position: [0, 3, -20], fov: 36, far: 10000, near: 0.01 }}
+        camera={{ position: [0, 3, -20], fov: 36, far: 100, near: 0.01 }}
         onCreated={({ gl }) => {
           gl.outputColorSpace = THREE.SRGBColorSpace;
 
@@ -25,14 +26,14 @@ const MiCar: FC = () => {
       >
         <color attach="background" args={["#000000"]} />
         <MiCarExperience></MiCarExperience>
-        <EffectComposer>
+        {/* <EffectComposer>
           <Bloom
             mipmapBlur
             intensity={0.8}
             blendFunction={POSTPROCESSING.BlendFunction.ADD}
             luminanceThreshold={0.1}
           />
-        </EffectComposer>
+        </EffectComposer> */}
         <Perf position="top-left" />
       </Canvas>
       <Loader />

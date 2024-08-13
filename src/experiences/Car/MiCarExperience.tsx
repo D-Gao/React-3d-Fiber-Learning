@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { FC, useEffect, useMemo, useRef } from "react";
@@ -86,6 +87,132 @@ const MiCarExperience: FC = () => {
     RGBELoader,
     "/textures/su7/t_env_night.hdr"
   );
+
+  const t1 = useRef(gsap.timeline());
+  const timeRef = useRef(0);
+  const startRef = useRef(0);
+  const endRef = useRef(0);
+
+  const startPosRef = useRef(new Vector3());
+  const endPosRef = useRef(new Vector3());
+
+  const cameraRef = useRef<CameraControls>(null);
+  const pressedEndRef = useRef<boolean>(true);
+  useEffect(() => {
+    cameraRef.current!.smoothTime = 0.1;
+    window.addEventListener("mousedown", handleMouseDown);
+    window.addEventListener("mouseup", handleMouseUp);
+    window.addEventListener("touchstart", handleMouseDown);
+    window.addEventListener("touchend", handleMouseUp);
+    return () => {
+      window.removeEventListener("mousedown", handleMouseDown);
+      window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("touchstart", handleMouseDown);
+      window.removeEventListener("touchend", handleMouseUp);
+    };
+  }, []);
+
+  const handleMouseDown = (e: Event) => {
+    //check if the previous action is ended completely
+    if (pressedEndRef.current) {
+      console.log("yes");
+      //check if the release action is ended till the starting position
+      const currentStartDistance = cameraRef.current!.distance;
+      const delta = Math.abs(endRef.current - currentStartDistance);
+
+      if (delta >= 4.9) {
+        //released enough to start a new one
+        //flag the start pos
+        startPosRef.current = camera.getWorldPosition(new Vector3());
+
+        const direction = new Vector3();
+        camera.getWorldDirection(direction);
+        endPosRef.current = startPosRef.current
+          .clone()
+          .add(direction.multiplyScalar(-5));
+        //const targetPos = new Vector3();
+        //cameraRef.current?.getTarget(targetPos)
+        cameraRef.current?.setPosition(...endPosRef.current.toArray(), true);
+        startRef.current = cameraRef.current!.distance;
+      } else {
+        //released not enough, so just set the end position to the previous setted distance but maybe not the previous end position since the rotation may occur
+        const direction = new Vector3();
+        const startPos = camera.getWorldPosition(new Vector3());
+        camera.getWorldDirection(direction);
+        const endPos = startPos.clone().add(direction.multiplyScalar(-delta));
+        cameraRef.current?.setPosition(...endPos.toArray(), true);
+      }
+    } else {
+      console.log("not yet");
+      //cameraRef.current?.setPosition(...endPosRef.current.toArray(), true);
+
+      const currentDistance = cameraRef.current!.distance;
+      const targetDistance = endPosRef.current
+        .clone()
+        .distanceTo(cameraRef.current!.getTarget(new Vector3()));
+
+      const direction = new Vector3();
+      const startPos = camera.getWorldPosition(new Vector3());
+      camera.getWorldDirection(direction);
+      const endPos = startPos
+        .clone()
+        .add(direction.multiplyScalar(-(targetDistance - currentDistance)));
+      cameraRef.current?.setPosition(...endPos.toArray(), true);
+    }
+  };
+  const handleMouseUp = (e: Event) => {
+    /*  t1.current.reverse(); */
+    //revert
+
+    //check the current distance to the camera target position
+    endRef.current = cameraRef.current!.distance;
+    //base on the distance calculate the delta distance to move back to original distance
+    const delta = endRef.current - startRef.current;
+
+    //check if the mouse press is pressed to the end then release
+    if (delta >= 4.9) {
+      console.log("yes pressed to the end and then release");
+      console.log(delta);
+      pressedEndRef.current = true;
+      /*   //get the movement direction
+    const direction = new Vector3();
+    const startPos = camera.getWorldPosition(new Vector3());
+    camera.getWorldDirection(direction);
+    const endPos = startPos.clone().add(direction.multiplyScalar(delta));
+    cameraRef.current?.setPosition(...endPos.toArray(), true);
+    //cameraRef.current?.reset(true); */
+      /* const direction = new Vector3();
+      const endPos = camera.getWorldPosition(new Vector3());
+
+      startPosRef.current = endPos.clone().add(direction.multiplyScalar(delta));
+      cameraRef.current?.setPosition(...startPosRef.current.toArray(), true); */
+
+      //get the movement direction
+      const direction = new Vector3();
+      const startPos = camera.getWorldPosition(new Vector3());
+      camera.getWorldDirection(direction);
+      const endPos = startPos.clone().add(direction.multiplyScalar(delta));
+      cameraRef.current?.setPosition(...endPos.toArray(), true);
+      //cameraRef.current?.reset(true);
+    } else {
+      pressedEndRef.current = false;
+      console.log("no pressed till end");
+      console.log(delta);
+      const direction = new Vector3();
+      const startPos = camera.getWorldPosition(new Vector3());
+      camera.getWorldDirection(direction);
+      const endPos = startPos.clone().add(direction.multiplyScalar(delta));
+      cameraRef.current?.setPosition(...endPos.toArray(), true);
+    }
+
+    /* //get the movement direction
+    const direction = new Vector3();
+    const startPos = camera.getWorldPosition(new Vector3());
+    camera.getWorldDirection(direction);
+    const endPos = startPos.clone().add(direction.multiplyScalar(delta));
+    cameraRef.current?.setPosition(...endPos.toArray(), true);
+    //cameraRef.current?.reset(true); */
+  };
 
   const optimizedLightTex = useMemo(() => {
     // Create PMREMGenerator
@@ -271,7 +398,7 @@ const MiCarExperience: FC = () => {
   return (
     <>
       {/*  <ambientLight></ambientLight> */}
-      <CameraControls></CameraControls>
+      <CameraControls ref={cameraRef}></CameraControls>
       <CarM />
       {/*  <Wind position-y={0.1}></Wind> */}
       {/*  <Tunnel ref={tunnelRef}></Tunnel> */}
