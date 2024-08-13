@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { FC, useEffect, useMemo, useRef } from "react";
 import { CameraControls } from "@react-three/drei";
-import { useFrame, useLoader, useThree } from "@react-three/fiber";
+import { invalidate, useFrame, useLoader, useThree } from "@react-three/fiber";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
 import {
   Color,
@@ -80,8 +80,10 @@ const fbm = ({
   return value;
 };
 
+const zoomSpeed = 3;
+
 const MiCarExperience: FC = () => {
-  const { gl, camera, scene } = useThree();
+  const { gl, camera, scene, clock } = useThree();
   const hdrTexture = useLoader(RGBELoader, "/textures/su7/t_env_light.hdr");
   const hdrNightTexture = useLoader(
     RGBELoader,
@@ -98,8 +100,11 @@ const MiCarExperience: FC = () => {
 
   const cameraRef = useRef<CameraControls>(null);
   const pressedEndRef = useRef<boolean>(true);
+
+  const startAnimation = useRef(false);
+
   useEffect(() => {
-    cameraRef.current!.smoothTime = 0.1;
+    cameraRef.current!.smoothTime = 0.2;
     window.addEventListener("mousedown", handleMouseDown);
     window.addEventListener("mouseup", handleMouseUp);
     window.addEventListener("touchstart", handleMouseDown);
@@ -113,14 +118,17 @@ const MiCarExperience: FC = () => {
   }, []);
 
   const handleMouseDown = (e: Event) => {
+    //trigger animations
+    tweenedPosOffset.current.set(0, 0, 0);
+    startAnimation.current = true;
+
     //check if the previous action is ended completely
     if (pressedEndRef.current) {
-      console.log("yes");
       //check if the release action is ended till the starting position
       const currentStartDistance = cameraRef.current!.distance;
       const delta = Math.abs(endRef.current - currentStartDistance);
 
-      if (delta >= 4.9) {
+      if (delta >= zoomSpeed - 0.1) {
         //released enough to start a new one
         //flag the start pos
         startPosRef.current = camera.getWorldPosition(new Vector3());
@@ -129,7 +137,7 @@ const MiCarExperience: FC = () => {
         camera.getWorldDirection(direction);
         endPosRef.current = startPosRef.current
           .clone()
-          .add(direction.multiplyScalar(-5));
+          .add(direction.multiplyScalar(-zoomSpeed));
         //const targetPos = new Vector3();
         //cameraRef.current?.getTarget(targetPos)
         cameraRef.current?.setPosition(...endPosRef.current.toArray(), true);
@@ -143,7 +151,6 @@ const MiCarExperience: FC = () => {
         cameraRef.current?.setPosition(...endPos.toArray(), true);
       }
     } else {
-      console.log("not yet");
       //cameraRef.current?.setPosition(...endPosRef.current.toArray(), true);
 
       const currentDistance = cameraRef.current!.distance;
@@ -161,18 +168,22 @@ const MiCarExperience: FC = () => {
     }
   };
   const handleMouseUp = (e: Event) => {
-    /*  t1.current.reverse(); */
-    //revert
-
+    //revert animation
+    startAnimation.current = false;
+    timeTotal.current = 0;
+    tweenedPosOffset.current.set(0, 0, 0);
+    console.log("tweenedPosOffset.x");
+    console.log(tweenedPosOffset.current.x);
+    console.log(tweenedPosOffset.current.y);
+    console.log(tweenedPosOffset.current.z);
+    t1.current.kill();
     //check the current distance to the camera target position
     endRef.current = cameraRef.current!.distance;
     //base on the distance calculate the delta distance to move back to original distance
     const delta = endRef.current - startRef.current;
 
     //check if the mouse press is pressed to the end then release
-    if (delta >= 4.9) {
-      console.log("yes pressed to the end and then release");
-      console.log(delta);
+    if (delta >= zoomSpeed - 0.1) {
       pressedEndRef.current = true;
       /*   //get the movement direction
     const direction = new Vector3();
@@ -196,8 +207,7 @@ const MiCarExperience: FC = () => {
       //cameraRef.current?.reset(true);
     } else {
       pressedEndRef.current = false;
-      console.log("no pressed till end");
-      console.log(delta);
+
       const direction = new Vector3();
       const startPos = camera.getWorldPosition(new Vector3());
       camera.getWorldDirection(direction);
@@ -364,33 +374,47 @@ const MiCarExperience: FC = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   useFrame((state, delta) => {
-    cubeCamera.current.update(gl, scene);
-    return;
+    if (!startAnimation.current) return;
+    //cubeCamera.current.update(gl, scene);
+
     const posOffset = new Vector3(0, 0, 0);
+    //console.log(timeTotal.current);
     timeTotal.current += delta * 100;
+
+    const elapsedTime = clock.getElapsedTime();
     posOffset.set(
       fbm({
-        frequency: timeTotal.current + MathUtils.randFloat(-10000, 0),
+        frequency: elapsedTime + MathUtils.randFloat(-10000, 0),
         amplitude: 2,
       }),
       fbm({
-        frequency: timeTotal.current + MathUtils.randFloat(-10000, 0),
+        frequency: elapsedTime + MathUtils.randFloat(-10000, 0),
         amplitude: 2,
       }),
       fbm({
-        frequency: timeTotal.current + MathUtils.randFloat(-10000, 0),
+        frequency: elapsedTime + MathUtils.randFloat(-10000, 0),
         amplitude: 2,
       })
     );
-
-    posOffset.multiplyScalar(0.5 * intensity);
+    const strength = Math.min(timeTotal.current * 0.0005, 0.05);
+    posOffset.multiplyScalar(strength * intensity);
+    console.log(tweenedPosOffset.current.x);
+    //t1.current = gsap.timeline();
+    //tweenedPosOffset.current.set()
     gsap.to(tweenedPosOffset.current, {
       x: posOffset.x,
       y: posOffset.y,
       z: posOffset.z,
-      duration: 1.2,
+      duration: 0.1,
+      /* delay: 10, */
+      onUpdate: () => {
+        //
+        //camera.position.add(tweenedPosOffset.current);
+        //cameraRef.current?.update(0.000000001);
+        //camera.updateProjectionMatrix();
+        //cameraRef.current?.update(0.01);
+      },
     });
-
     camera.position.add(tweenedPosOffset.current);
     camera.updateProjectionMatrix();
   });

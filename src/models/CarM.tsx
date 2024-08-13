@@ -182,10 +182,11 @@ export function CarM(props: JSX.IntrinsicElements["group"]) {
         ];
       }
     });
-    initCurves();
+    //initCurves();
   }, []);
 
   useFrame((state, delta) => {
+    return;
     /* CustomTunnelMaterial.uniforms.time.value = state.clock.getElapsedTime();
     cubeCamera.update(state.gl, state.scene); */
     /* wheelRef.current?.rotateX(state.clock.getElapsedTime() * -0.001); */
