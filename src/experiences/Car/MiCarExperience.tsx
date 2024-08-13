@@ -49,7 +49,7 @@ export const CustomTunnelMaterial = new ShaderMaterial({
     time: { value: 0 },
     //color: { value: new THREE.Color(1, 0, 0.13) },
     vProgress: { value: 0.8 },
-    opacity: { value: 1 },
+    opacity: { value: 0 },
     random: { value: Math.random() },
     speed: { value: 1 },
   },
@@ -413,8 +413,8 @@ const MiCarExperience: FC = () => {
       <CameraControls ref={cameraRef}></CameraControls>
       <CarM />
       {/*  <Wind position-y={0.1}></Wind> */}
-      {/*  <Tunnel ref={tunnelRef}></Tunnel> */}
-      <Room texture={hdrNightTexture}></Room>
+      <Tunnel ref={tunnelRef}></Tunnel>
+      <Room texture={cubeRenderTarget.texture}></Room>
     </>
   );
 };

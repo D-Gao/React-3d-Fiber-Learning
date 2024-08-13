@@ -10,6 +10,7 @@ import { useEffect, useRef } from "react";
 import { MeshReflectorMaterial, useGLTF, useTexture } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
 import { MeshReflectorMaterialProps } from "@react-three/drei/materials/MeshReflectorMaterial";
+import gsap from "gsap";
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -25,6 +26,8 @@ type GLTFResult = GLTF & {
 /* type RoomProps = JSX.IntrinsicElements["group"] & THREE.Texture; */
 
 export function Room(props: any) {
+  const t3 = useRef(gsap.timeline());
+
   const { nodes, materials } = useGLTF("/models/room.glb") as GLTFResult;
 
   const [aoMap, lightMap, normalMap, roughnessMap] = useTexture([
@@ -54,7 +57,7 @@ export function Room(props: any) {
     (floor.current!.material as THREE.MeshPhysicalMaterial).envMapIntensity = 0;
     materials.light.side = THREE.DoubleSide;
     materials.light.transparent = true;
-    //materials.light.opacity = 1;
+    materials.light.opacity = 1;
     materials.light.emissive = new THREE.Color("white");
     materials.light.toneMapped = false;
     materials.light.emissiveIntensity = 0.9;
@@ -87,6 +90,57 @@ export function Room(props: any) {
     floorRef.current!.roughnessMap.flipY = false;
     floorRef.current!.roughnessMap.colorSpace = THREE.LinearSRGBColorSpace;
   }, [props.texture]);
+
+  useEffect(() => {
+    window.addEventListener("mousedown", handleMouseDown);
+    window.addEventListener("mouseup", handleMouseUp);
+    window.addEventListener("touchstart", handleMouseDown);
+    window.addEventListener("touchend", handleMouseUp);
+    return () => {
+      window.removeEventListener("mousedown", handleMouseDown);
+      window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("touchstart", handleMouseDown);
+      window.removeEventListener("touchend", handleMouseUp);
+    };
+  }, []);
+
+  const handleMouseDown = (e: Event) => {
+    //start transition
+
+    //t3.current = gsap.timeline();
+    t3.current.clear();
+    t3.current
+      .to(materials.light, {
+        duration: 0.5,
+        opacity: 0,
+      })
+      .to(
+        floor.current!.material as THREE.MeshPhysicalMaterial,
+        {
+          duration: 0.5,
+          envMapIntensity: 1,
+        },
+        "<"
+      );
+  };
+  const handleMouseUp = (e: Event) => {
+    t3.current.clear();
+    //revert animation
+    t3.current
+      .to(materials.light, {
+        duration: 1,
+        opacity: 1,
+      })
+      .to(
+        floor.current!.material as THREE.MeshPhysicalMaterial,
+        {
+          duration: 0.5,
+          envMapIntensity: 0,
+        },
+        "<"
+      );
+  };
+
   return (
     <group {...props} dispose={null}>
       <mesh
@@ -99,7 +153,7 @@ export function Room(props: any) {
       <mesh
         ref={floor}
         geometry={nodes.ReflecFloor.geometry}
-        material={materials.floor}
+        //material={materials.floor}
         position={[28, 0, 10.9]}
         rotation={[Math.PI / 2, Math.PI, 0]}
         scale={2.342}
@@ -120,6 +174,7 @@ export function Room(props: any) {
           depthToBlurRatioBias={0.25}
           metalness={0}
           roughness={0.8}
+          transparent
 
           //envMapIntensity={0}
         />

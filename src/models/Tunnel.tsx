@@ -8,8 +8,9 @@ import React, { forwardRef, useEffect, useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
 import { GroupProps, useFrame } from "@react-three/fiber";
-import { Group, Object3DEventMap } from "three";
+import { Group, Object4DEventMap } from "three";
 import { CustomTunnelMaterial } from "@/experiences/Car/MiCarExperience";
+import gsap from "gsap";
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -19,7 +20,7 @@ type GLTFResult = GLTF & {
 };
 
 export const Tunnel = forwardRef<
-  Group<Object3DEventMap>,
+  Group<Object4DEventMap>,
   JSX.IntrinsicElements["group"]
 >((props, ref) => {
   const { nodes, materials } = useGLTF(
@@ -27,13 +28,48 @@ export const Tunnel = forwardRef<
   ) as GLTFResult;
 
   const tunnelRef = useRef<THREE.Mesh>(null);
+  const t4 = useRef(gsap.timeline());
+
   useFrame((state) => {
     CustomTunnelMaterial.uniforms.time.value = state.clock.getElapsedTime();
   });
 
   useEffect(() => {
+    CustomTunnelMaterial.opacity = 0;
     tunnelRef.current!.layers.enable(1);
   }, []);
+
+  useEffect(() => {
+    window.addEventListener("mousedown", handleMouseDown);
+    window.addEventListener("mouseup", handleMouseUp);
+    window.addEventListener("touchstart", handleMouseDown);
+    window.addEventListener("touchend", handleMouseUp);
+    return () => {
+      window.removeEventListener("mousedown", handleMouseDown);
+      window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("touchstart", handleMouseDown);
+      window.removeEventListener("touchend", handleMouseUp);
+    };
+  }, []);
+
+  const handleMouseDown = (e: Event) => {
+    //start transition
+
+    //t4.current = gsap.timeline();
+    t4.current.clear();
+    t4.current.to(CustomTunnelMaterial.uniforms.opacity, {
+      duration: 0.5,
+      value: 1,
+    });
+  };
+  const handleMouseUp = (e: Event) => {
+    t4.current.clear();
+    //revert animation
+    t4.current.to(CustomTunnelMaterial.uniforms.opacity, {
+      duration: 1,
+      value: 0,
+    });
+  };
 
   return (
     <group {...props} dispose={null} /* position={[0, 0, 0]} */>

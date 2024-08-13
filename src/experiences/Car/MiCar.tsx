@@ -15,7 +15,7 @@ const MiCar: FC = () => {
         /*  frameloop="demand" */
         shadows
         dpr={[1, 2]}
-        camera={{ position: [0, 3, -20], fov: 36, far: 100, near: 0.01 }}
+        camera={{ position: [0, 3, -20], fov: 36, far: 200, near: 0.01 }}
         onCreated={({ gl }) => {
           gl.outputColorSpace = THREE.SRGBColorSpace;
 

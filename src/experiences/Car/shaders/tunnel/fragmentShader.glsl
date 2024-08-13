@@ -1,5 +1,6 @@
 
 uniform float time;
+uniform float opacity;
 varying vec2 vUv;
 
 
@@ -96,5 +97,5 @@ void main(){
     col*=vec3(1.5,1.,2.);
    
     //gl_FragColor=vec4(1.,1.,1., mask);
-    gl_FragColor=vec4(col, mask);
+    gl_FragColor=vec4(col, mask * opacity);
 }
