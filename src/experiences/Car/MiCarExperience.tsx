@@ -3,24 +3,17 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { FC, useEffect, useMemo, useRef } from "react";
 import { CameraControls } from "@react-three/drei";
-import { invalidate, useFrame, useLoader, useThree } from "@react-three/fiber";
+import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
 import {
-  Color,
   CubeCamera,
   CubeUVReflectionMapping,
-  CylinderGeometry,
-  EquirectangularReflectionMapping,
   Group,
   HalfFloatType,
   LinearFilter,
   LinearMipmapLinearFilter,
   MathUtils,
-  Mesh,
-  MeshBasicMaterial,
-  MeshStandardMaterial,
   PMREMGenerator,
-  PlaneGeometry,
   SRGBColorSpace,
   ShaderMaterial,
   Vector3,
@@ -72,7 +65,6 @@ const fbm = ({
   let value = 0;
   for (let i = 0; i < octave; i++) {
     const noiseValue = noise2d(frequency, frequency);
-    /* console.log(noiseValue); */
     value += noiseValue * amplitude;
     frequency *= lacunarity;
     amplitude *= persistance;
@@ -92,7 +84,6 @@ const MiCarExperience: FC = () => {
 
   const t1 = useRef(gsap.timeline());
   const t2 = useRef(gsap.timeline());
-  const timeRef = useRef(0);
   const startRef = useRef(0);
   const endRef = useRef(0);
 
@@ -147,8 +138,7 @@ const MiCarExperience: FC = () => {
         endPosRef.current = startPosRef.current
           .clone()
           .add(direction.multiplyScalar(-zoomSpeed));
-        //const targetPos = new Vector3();
-        //cameraRef.current?.getTarget(targetPos)
+
         cameraRef.current?.setPosition(...endPosRef.current.toArray(), true);
         startRef.current = cameraRef.current!.distance;
       } else {
@@ -189,10 +179,6 @@ const MiCarExperience: FC = () => {
       duration: 0.5,
     });
 
-    /* console.log("tweenedPosOffset.x");
-    console.log(tweenedPosOffset.current.x);
-    console.log(tweenedPosOffset.current.y);
-    console.log(tweenedPosOffset.current.z); */
     t1.current.kill();
     //check the current distance to the camera target position
     endRef.current = cameraRef.current!.distance;
@@ -202,18 +188,6 @@ const MiCarExperience: FC = () => {
     //check if the mouse press is pressed to the end then release
     if (delta >= zoomSpeed - 0.1) {
       pressedEndRef.current = true;
-      /*   //get the movement direction
-    const direction = new Vector3();
-    const startPos = camera.getWorldPosition(new Vector3());
-    camera.getWorldDirection(direction);
-    const endPos = startPos.clone().add(direction.multiplyScalar(delta));
-    cameraRef.current?.setPosition(...endPos.toArray(), true);
-    //cameraRef.current?.reset(true); */
-      /* const direction = new Vector3();
-      const endPos = camera.getWorldPosition(new Vector3());
-
-      startPosRef.current = endPos.clone().add(direction.multiplyScalar(delta));
-      cameraRef.current?.setPosition(...startPosRef.current.toArray(), true); */
 
       //get the movement direction
       const direction = new Vector3();
@@ -231,14 +205,6 @@ const MiCarExperience: FC = () => {
       const endPos = startPos.clone().add(direction.multiplyScalar(delta));
       cameraRef.current?.setPosition(...endPos.toArray(), true);
     }
-
-    /* //get the movement direction
-    const direction = new Vector3();
-    const startPos = camera.getWorldPosition(new Vector3());
-    camera.getWorldDirection(direction);
-    const endPos = startPos.clone().add(direction.multiplyScalar(delta));
-    cameraRef.current?.setPosition(...endPos.toArray(), true);
-    //cameraRef.current?.reset(true); */
   };
 
   const optimizedLightTex = useMemo(() => {
@@ -320,45 +286,26 @@ const MiCarExperience: FC = () => {
   //env change at the beginning of the scene
   const switchEnv = () => {
     gl.setRenderTarget(rt.current);
-    /* const meshMaterial = new MeshBasicMaterial({
-      color: new Color(0xffff00),
-    }); */
     const params = { uweight: 1, intensity: 1 };
-
     quad.current.render(gl);
-    rt.current.texture.mapping = CubeUVReflectionMapping; //EquirectangularReflectionMapping;
+    rt.current.texture.mapping = CubeUVReflectionMapping;
     rt.current.texture.colorSpace = SRGBColorSpace;
     scene.environmentIntensity = 1;
-    scene.environment = rt.current.texture; //hdrNightTexture;
+    scene.environment = rt.current.texture;
     gl.setRenderTarget(null);
-    //quad.dispose();
-    /* return; */
     gsap.to(params, {
       uweight: 0,
       duration: 4,
       delay: 0.5,
       ease: "power2.inOut",
       onUpdate: () => {
-        /* console.log(params.uweight);
-        mixMaterial.uniforms.uWeight.value = params.uweight; */
         mixMaterial.current.uniforms.uWeight.value = params.uweight;
-        /* mixMaterial.current.uniformsNeedUpdate = true;
-        //invalidate();
-        gl.setRenderTarget(rt.current);
-        //const quad = new FullScreenQuad(mixMaterial.current);
-        quad.current.render(gl);
-
-        rt.current.texture.mapping = EquirectangularReflectionMapping;
-        rt.current.texture.colorSpace = SRGBColorSpace;
-        rt.current.texture.needsUpdate = true;
-        scene.environment = rt.current.texture;
-        gl.render(scene, camera);
-        //invalidate();
-        console.log(mixMaterial.current.uniforms.uWeight.value); */
-        //gl.setRenderTarget(null);
         gl.setRenderTarget(rt.current);
         quad.current.render(gl);
         gl.setRenderTarget(null);
+      },
+      onComplete: () => {
+        quad.current.dispose();
       },
     });
   };
@@ -375,11 +322,6 @@ const MiCarExperience: FC = () => {
 
     //scene.environment = cubeRenderTarget.texture;
     //scene.environmentIntensity = 1;
-
-    /*  gsap.to(scene, {
-      environment: hdrTexture,
-      duration: 2000,
-    }); */
 
     switchEnv();
   }, [hdrTexture, scene, gl, gsap]);
