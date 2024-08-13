@@ -115,11 +115,11 @@ const MiCarExperience: FC = () => {
     startAnimation.current = true;
     //envmap change
     scene.environment = cubeRenderTarget.texture;
-    scene.environmentIntensity = 3;
+    scene.environmentIntensity = 5;
     t2.current.clear();
     t2.current.to(scene, {
-      environmentIntensity: 5,
-      duration: 1,
+      environmentIntensity: 20,
+      duration: 2,
     });
 
     //check if the previous action is ended completely

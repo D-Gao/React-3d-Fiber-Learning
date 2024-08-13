@@ -380,6 +380,7 @@ export function CarM(props: JSX.IntrinsicElements["group"]) {
   };
 
   const handleMouseUp = (e: Event) => {
+    console.log("handleMouseUp");
     t2.current.reverse(1);
   };
 
