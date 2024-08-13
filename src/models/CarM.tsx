@@ -110,6 +110,9 @@ export function CarM(props: JSX.IntrinsicElements["group"]) {
   const clip = useRef(new THREE.Plane());
   const clip2 = useRef(new THREE.Plane());
 
+  const startAnimation = useRef(false);
+  const t2 = useRef(gsap.timeline());
+
   const { CONSTANT } = useControls("Clip Plane Control", {
     CONSTANT: { value: 8, min: -10, max: 8, step: 0.1 },
     //RUN_SPEED: { value: 1.6, min: 0.2, max: 12, step: 0.1 },
@@ -336,12 +339,49 @@ export function CarM(props: JSX.IntrinsicElements["group"]) {
     colliderBvh.current = temp;
     ref.current!.add(colliderMesh, outlineLines.current);
 
+    window.addEventListener("mousedown", handleMouseDown);
+    window.addEventListener("mouseup", handleMouseUp);
+    window.addEventListener("touchstart", handleMouseDown);
+    window.addEventListener("touchend", handleMouseUp);
+
     return () => {
       mergedMesh.geometry.dispose();
       mergedMesh.material.dispose();
       state.scene.remove(mergedMesh);
+      window.removeEventListener("mousedown", handleMouseDown);
+      window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("touchstart", handleMouseDown);
+      window.removeEventListener("touchend", handleMouseUp);
     };
   }, []);
+
+  const handleMouseDown = (e: Event) => {
+    const params = { speed: 0 };
+    t2.current = gsap.timeline();
+    t2.current
+      .to(params, {
+        speed: 1,
+        duration: 1,
+        onUpdate: () => {
+          wheelRef.current?.children.forEach((item) => {
+            (item as THREE.Mesh).rotateX(params.speed * -0.1);
+          });
+        },
+      })
+      .to(params, {
+        duration: 1,
+        onUpdate: () => {
+          wheelRef.current?.children.forEach((item) => {
+            (item as THREE.Mesh).rotateX(params.speed * -0.1);
+          });
+        },
+        repeat: -1,
+      });
+  };
+
+  const handleMouseUp = (e: Event) => {
+    t2.current.reverse(1);
+  };
 
   useFrame((_, defaultDelta) => {
     return;

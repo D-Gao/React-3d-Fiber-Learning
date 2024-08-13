@@ -374,11 +374,10 @@ const MiCarExperience: FC = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   useFrame((state, delta) => {
-    if (!startAnimation.current) return;
     //cubeCamera.current.update(gl, scene);
-
+    if (!startAnimation.current) return;
     const posOffset = new Vector3(0, 0, 0);
-    //console.log(timeTotal.current);
+
     timeTotal.current += delta * 100;
 
     const elapsedTime = clock.getElapsedTime();
@@ -398,22 +397,11 @@ const MiCarExperience: FC = () => {
     );
     const strength = Math.min(timeTotal.current * 0.0005, 0.05);
     posOffset.multiplyScalar(strength * intensity);
-    console.log(tweenedPosOffset.current.x);
-    //t1.current = gsap.timeline();
-    //tweenedPosOffset.current.set()
     gsap.to(tweenedPosOffset.current, {
       x: posOffset.x,
       y: posOffset.y,
       z: posOffset.z,
-      duration: 0.1,
-      /* delay: 10, */
-      onUpdate: () => {
-        //
-        //camera.position.add(tweenedPosOffset.current);
-        //cameraRef.current?.update(0.000000001);
-        //camera.updateProjectionMatrix();
-        //cameraRef.current?.update(0.01);
-      },
+      duration: 0.12,
     });
     camera.position.add(tweenedPosOffset.current);
     camera.updateProjectionMatrix();
