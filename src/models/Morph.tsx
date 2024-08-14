@@ -4,7 +4,6 @@ Command: npx gltfjsx@6.4.1 public/models/models.glb -o src/models/Morph.tsx --ty
 */
 
 import * as THREE from "three";
-import React from "react";
 import { useGLTF } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
 
@@ -19,7 +18,7 @@ type GLTFResult = GLTF & {
 };
 
 export function Morph(props: JSX.IntrinsicElements["group"]) {
-  const { nodes, materials } = useGLTF("/models/models.glb") as GLTFResult;
+  const { nodes } = useGLTF("/models/models.glb") as GLTFResult;
   return (
     <group {...props} dispose={null}>
       <mesh

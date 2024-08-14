@@ -4,6 +4,11 @@ declare module "@/models/Camping.jsx" {
   export { Camping };
 }
 
+declare module "@/experience/ImageTransition/FadingImage.jsx" {
+  const FadingImage: any;
+  export { FadingImage };
+}
+
 declare module "*.glsl" {
   const value: string;
   export default value;

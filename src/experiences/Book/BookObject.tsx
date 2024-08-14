@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { useCursor, useHelper, useTexture } from "@react-three/drei";
+import { useTexture } from "@react-three/drei";
 import { GroupProps, useFrame } from "@react-three/fiber";
 import { useAtom } from "jotai";
 import { easing } from "maath";
@@ -10,12 +10,10 @@ import {
   Color,
   Float32BufferAttribute,
   Group,
-  Material,
   MathUtils,
-  MeshBasicMaterial,
   MeshStandardMaterial,
+  Object3DEventMap,
   Skeleton,
-  SkeletonHelper,
   SkinnedMesh,
   SRGBColorSpace,
   Uint16BufferAttribute,
@@ -68,8 +66,8 @@ pageGeometry.translate(PAGE_WIDTH / 2, 0, 0);
 
 const position = pageGeometry.attributes.position;
 const vertex = new Vector3();
-const skinIndexes = [];
-const skinWeights = [];
+const skinIndexes: number[] = [];
+const skinWeights: number[] = [];
 
 for (let i = 0; i < position.count; i++) {
   // ALL VERTICES
@@ -92,7 +90,15 @@ pageGeometry.setAttribute(
   new Float32BufferAttribute(skinWeights, 4)
 );
 
-const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
+const Page = ({
+  number,
+  front,
+  back,
+  page,
+  opened,
+  bookClosed,
+  ...props
+}: any) => {
   const [picture, picture2, pictureRoughness] = useTexture([
     `/textures/book/${front}.jpg`,
     `/textures/book/${back}.jpg`,
@@ -112,7 +118,7 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
   const skinnedMeshRef = useRef<SkinnedMesh>(null);
 
   const manualSkinnedMesh = useMemo(() => {
-    const bones = [];
+    const bones: Bone<Object3DEventMap>[] = [];
     for (let i = 0; i <= PAGE_SEGMENTS; i++) {
       const bone = new Bone();
       bones.push(bone);

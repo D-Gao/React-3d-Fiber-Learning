@@ -2,7 +2,7 @@ import { Canvas } from "@react-three/fiber";
 import { FC } from "react";
 import EarthExperience from "./EarthExperience";
 import { Loader } from "@react-three/drei";
-import { Bloom, EffectComposer } from "@react-three/postprocessing";
+/* import { Bloom, EffectComposer } from "@react-three/postprocessing"; */
 
 const Earth: FC = () => {
   return (

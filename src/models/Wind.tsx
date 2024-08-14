@@ -58,9 +58,7 @@ type GLTFResult = GLTF & {
 };
 
 export function Wind(props: JSX.IntrinsicElements["group"]) {
-  const { nodes, materials, scene } = useGLTF(
-    "/models/wind_line.glb"
-  ) as GLTFResult;
+  const { nodes } = useGLTF("/models/wind_line.glb") as GLTFResult;
 
   const groupRef = useRef<THREE.Group>(null);
 
@@ -78,7 +76,7 @@ export function Wind(props: JSX.IntrinsicElements["group"]) {
     }
   }, [nodes]);
 
-  useFrame((state, delta) => {
+  useFrame((state, _) => {
     CustomWindMaterial.uniforms.vTime.value = state.clock.elapsedTime;
   });
 

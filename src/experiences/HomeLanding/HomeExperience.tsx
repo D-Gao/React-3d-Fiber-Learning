@@ -10,7 +10,6 @@ import {
   Environment,
   Float,
   MeshReflectorMaterial,
-  OrbitControls,
   RenderTexture,
   Text,
   /* useFont, */
@@ -135,14 +134,14 @@ export const HomeExperience = () => {
                 rotation-y={-degToRad(25)}
                 rotation-x={degToRad(40)}
                 position-y={-0.5}
-                html={false}
+                html={undefined}
               />
             </Float>
           </RenderTexture>
         </meshBasicMaterial>
       </Text>
       <group rotation-y={degToRad(-25)} position-x={3}>
-        <Camping scale={0.6} html />
+        <Camping scale={0.6} html={null} />
         <mesh ref={meshFitCameraStore} visible={false}>
           <boxGeometry args={[2, 1, 2]} />
           <meshBasicMaterial color="red" transparent opacity={0.5} />

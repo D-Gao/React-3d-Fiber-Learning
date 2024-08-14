@@ -26,7 +26,7 @@ import { CarM } from "@/models/CarM";
 import { createNoise2D } from "simplex-noise";
 import gsap from "gsap";
 import { Tunnel } from "@/models/Tunnel";
-import { Wind } from "@/models/Wind";
+//import { Wind } from "@/models/Wind";
 import { Room } from "@/models/Room";
 import { FullScreenQuad } from "three/examples/jsm/Addons.js";
 import dynamicEnvVertexShader from "./shaders/env/vertexSahder.glsl";
@@ -109,7 +109,7 @@ const MiCarExperience: FC = () => {
     };
   }, []);
 
-  const handleMouseDown = (e: Event) => {
+  const handleMouseDown = (_: Event) => {
     //trigger animations
     tweenedPosOffset.current.set(0, 0, 0);
     startAnimation.current = true;
@@ -166,7 +166,7 @@ const MiCarExperience: FC = () => {
       cameraRef.current?.setPosition(...endPos.toArray(), true);
     }
   };
-  const handleMouseUp = (e: Event) => {
+  const handleMouseUp = (_: Event) => {
     //revert animation
     startAnimation.current = false;
     timeTotal.current = 0;
@@ -327,7 +327,7 @@ const MiCarExperience: FC = () => {
   }, [hdrTexture, scene, gl, gsap]);
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     cubeCamera.current.update(gl, scene);
     if (!startAnimation.current) return;
     const posOffset = new Vector3(0, 0, 0);

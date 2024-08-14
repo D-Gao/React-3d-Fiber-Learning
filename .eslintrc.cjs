@@ -12,9 +12,12 @@ module.exports = {
   ignorePatterns: ["dist", ".eslintrc.cjs", "*.js"],
   overrides: [
     {
-      files: ["*.js", "*.jsx"],
+      files: ["*.js", "*.jsx", "*.ts", "*.tsx"],
       rules: {
         // Disable rules that are not relevant to JS/JSX files
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-empty-function": "off",
+        "@typescript-eslint/no-unused-vars": "off",
         "@typescript-eslint/no-var-requires": "off",
         "@typescript-eslint/explicit-module-boundary-types": "off",
       },

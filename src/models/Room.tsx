@@ -104,7 +104,7 @@ export function Room(props: any) {
     };
   }, []);
 
-  const handleMouseDown = (e: Event) => {
+  const handleMouseDown = (_: Event) => {
     //start transition
 
     //t3.current = gsap.timeline();
@@ -123,7 +123,7 @@ export function Room(props: any) {
         "<"
       );
   };
-  const handleMouseUp = (e: Event) => {
+  const handleMouseUp = (_: Event) => {
     t3.current.clear();
     //revert animation
     t3.current

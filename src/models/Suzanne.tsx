@@ -17,7 +17,7 @@ type GLTFResult = GLTF & {
 };
 
 export function Suzanne(props: JSX.IntrinsicElements["group"]) {
-  const { nodes, materials } = useGLTF("/models/suzanne.glb") as GLTFResult;
+  const { nodes } = useGLTF("/models/suzanne.glb") as GLTFResult;
   const ref = useRef<THREE.ShaderMaterial>(null);
 
   useFrame((_, delta) => {

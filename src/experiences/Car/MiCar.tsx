@@ -6,7 +6,6 @@ import * as THREE from "three";
 import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import * as POSTPROCESSING from "postprocessing";
 import { Perf } from "r3f-perf";
-import gsap from "gsap";
 
 const MiCar: FC = () => {
   return (
@@ -14,6 +13,7 @@ const MiCar: FC = () => {
       <Canvas
         /*  frameloop="demand" */
         shadows
+        gl={{ powerPreference: "high-performance" }}
         dpr={[1, 2]}
         camera={{ position: [0, 3, -20], fov: 36, far: 200, near: 0.01 }}
         onCreated={({ gl }) => {
@@ -21,7 +21,7 @@ const MiCar: FC = () => {
 
           gl.toneMapping = THREE.CineonToneMapping;
           gl.toneMappingExposure = 0.9;
-          gl.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+          gl.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         }}
       >
         <color attach="background" args={["#000000"]} />
