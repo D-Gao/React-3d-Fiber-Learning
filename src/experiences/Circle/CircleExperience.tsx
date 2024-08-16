@@ -111,7 +111,20 @@ const CircleExperience = () => {
 
     round1.computeLineDistances();
     round1.scale.set(1, 1, 1);
+
+    const matLineDashed = new LineMaterial({
+      color: 0x82d7f4,
+      linewidth: 8,
+      dashed: true,
+      dashSize: 14,
+      gapSize: 14,
+      opacity: 1,
+      transparent: true,
+    });
+    const letterDashed = new Line2(roundGeometry1, matLineDashed);
+
     letterGroupRef.current?.add(round1);
+    letterGroupRef.current?.add(letterDashed);
   };
 
   const points: Vector3[] = [];
