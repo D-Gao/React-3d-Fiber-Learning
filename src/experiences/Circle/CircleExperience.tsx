@@ -27,6 +27,7 @@ import {
 import { CirclePercentIcon } from "lucide-react";
 import Triangle from "./Triangle";
 import { filterPoint, getRoundPoints } from "./utils";
+import gsap from "gsap";
 
 const numberOfInstances = 8;
 
@@ -78,6 +79,7 @@ const CircleExperience = () => {
   const lineGeoRectRef2 = useRef<LineGeometry>(null);
   const lineRectRef2 = useRef<Line2>(null);
 
+  const roundGroupRef = useRef<Group>(null);
   const letterGroupRef = useRef<Group>(null);
   const logoGroupRef = useRef<Group>(null);
   const lineRectGroupRef = useRef<Group>(null);
@@ -214,6 +216,18 @@ const CircleExperience = () => {
     }
     createRound(13 - 1.5);
     createRound(13 + 2 + 1.5);
+
+    //start animation
+    const params = { scale: 0 };
+    gsap.to(params, {
+      scale: 1,
+      duration: 1,
+      onUpdate: () => {
+        roundGroupRef.current!.scale.copy(
+          new Vector3(params.scale, params.scale, params.scale)
+        );
+      },
+    });
   }, []);
 
   useEffect(() => {
@@ -239,72 +253,77 @@ const CircleExperience = () => {
 
     const geometry = new LineGeometry();
 
-    geometry.setPositions(filterPoint(v3s, 1));
+    geometry.setPositions(filterPoint(v3s, 0));
 
     const matLine = new LineMaterial({
       color: 0x82d7f4,
       linewidth: 4,
     });
-    //lineMaterials.push(matLine);
 
     const girlLine = new Line2(geometry, matLine);
-
-    /* animatList.push(
-      new TWEEN.Tween({ index: 0 })
-        .delay(500)
-        .to({ index: 1 }, 1000)
-        .onUpdate(({ index }) => {
-          girlLine.geometry.setPositions(filterPoint(v3s, index));
-        })
-    ); */
 
     girlLine.computeLineDistances();
     girlLine.scale.set(1, 1, 1);
     logoGroupRef.current!.add(girlLine);
     logoGroupRef.current!.position.z = 1;
+
+    //animation starts
+    const params = {
+      index: 0,
+    };
+    gsap.to(params, {
+      index: 1,
+      duration: 1.5,
+      delay: 1.5,
+      onUpdate: () => {
+        girlLine.geometry.setPositions(filterPoint(v3s, params.index));
+      },
+    });
   }, [logoResult]);
 
   return (
     <>
       <CameraControls></CameraControls>
 
-      <line2 ref={lineRef1} scale={[1, 1, 1]}>
-        <lineGeometry ref={lineGeoRef1}></lineGeometry>
-        <lineMaterial
-          color={0x82d7f4}
-          linewidth={20}
-          dashed={true}
-          dashSize={360 / 16}
-          gapSize={360 / 16}
-          opacity={0.1}
-          transparent={true}
-        ></lineMaterial>
-      </line2>
+      <group ref={roundGroupRef}>
+        <line2 ref={lineRef1} scale={[1, 1, 1]}>
+          <lineGeometry ref={lineGeoRef1}></lineGeometry>
+          <lineMaterial
+            color={0x82d7f4}
+            linewidth={20}
+            dashed={true}
+            dashSize={360 / 16}
+            gapSize={360 / 16}
+            opacity={0.1}
+            transparent={true}
+          ></lineMaterial>
+        </line2>
 
-      <line2 ref={lineRef2} scale={[1, 1, 1]}>
-        <lineGeometry ref={lineGeoRef2}></lineGeometry>
-        <lineMaterial
-          color={0x82d7f4}
-          linewidth={10}
-          dashed={true}
-          dashSize={360 / 26}
-          gapSize={360 / 26}
-          opacity={0.3}
-          transparent={true}
-        ></lineMaterial>
-      </line2>
-      <line2 ref={lineRef3} scale={[1, 1, 1]}>
-        <lineGeometry ref={lineGeoRef3}></lineGeometry>
-        <lineMaterial
-          color={0x82d7f4}
-          linewidth={10}
-          dashed={true}
-          dashSize={360 / 360}
-          gapSize={360 / 360}
-          opacity={0.1}
-          transparent={true}
-        ></lineMaterial>
-      </line2>
+        <line2 ref={lineRef2} scale={[1, 1, 1]}>
+          <lineGeometry ref={lineGeoRef2}></lineGeometry>
+          <lineMaterial
+            color={0x82d7f4}
+            linewidth={10}
+            dashed={true}
+            dashSize={360 / 26}
+            gapSize={360 / 26}
+            opacity={0.3}
+            transparent={true}
+          ></lineMaterial>
+        </line2>
+        <line2 ref={lineRef3} scale={[1, 1, 1]}>
+          <lineGeometry ref={lineGeoRef3}></lineGeometry>
+          <lineMaterial
+            color={0x82d7f4}
+            linewidth={10}
+            dashed={true}
+            dashSize={360 / 360}
+            gapSize={360 / 360}
+            opacity={0.1}
+            transparent={true}
+          ></lineMaterial>
+        </line2>
+      </group>
 
       <group ref={letterGroupRef}>
         <instancedFlow

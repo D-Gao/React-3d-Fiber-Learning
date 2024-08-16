@@ -3,6 +3,7 @@ import { LineGeometry } from "three/examples/jsm/Addons.js";
 import { Line2 } from "three/examples/jsm/lines/Line2.js";
 import * as THREE from "three";
 import { filterPoint, getRoundPoints } from "./utils";
+import gsap from "gsap";
 
 interface Props {
   r: number;
@@ -23,7 +24,7 @@ const Triangle = ({
   useEffect(() => {
     const points = getRoundPoints(r, pointCounts, true);
     const linePoints: THREE.Vector3[] = [];
-    const pointArr: number[] = [];
+    /* const pointArr: number[] = []; */
 
     for (let i = 0; i < pointCounts; i++) {
       const line = new THREE.LineCurve3(
@@ -32,12 +33,25 @@ const Triangle = ({
       );
       const ps = line.getPoints(10);
       ps.forEach((v3: THREE.Vector3) => {
-        pointArr.push(...v3.toArray());
+        /*  pointArr.push(...v3.toArray()); */
         linePoints.push(v3);
       });
     }
-    lineGeoRef.current?.setPositions(filterPoint(linePoints, 1));
+    lineGeoRef.current?.setPositions(filterPoint(linePoints, 0));
     lineRef.current?.computeLineDistances();
+
+    //start animation
+    const params = {
+      index: 0,
+    };
+    gsap.to(params, {
+      index: 1,
+      duration: 1.5,
+      ease: "power1.inOut",
+      onUpdate: function () {
+        lineGeoRef.current?.setPositions(filterPoint(linePoints, params.index));
+      },
+    });
   }, [r]);
   return (
     <line2 ref={lineRef} scale={[1, 1, 1]} rotation={rotation}>
