@@ -13,6 +13,7 @@ import Morph from "./experiences/Morph/Morph";
 import Book from "./experiences/Book/Book";
 import MiCar from "./experiences/Car/MiCar";
 import Rain from "./experiences/Rain/Rain";
+import Circle from "./experiences/Circle/Circle";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="/book" element={<Book />} />
           <Route path="/su7" element={<MiCar />} />
           <Route path="/rain" element={<Rain />} />
+          <Route path="/circle" element={<Circle />} />
         </Routes>
       </Router>
     </div>
