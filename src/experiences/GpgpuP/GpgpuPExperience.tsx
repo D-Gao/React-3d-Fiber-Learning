@@ -6,26 +6,34 @@ import computeShader from "./shaders/compute.glsl";
 import fragmentShader from "./shaders/frag.glsl";
 import vertexShader from "./shaders/vert.glsl";
 import * as THREE from "three";
+import { useControls } from "leva";
 
 const size = 512;
 const count = size ** 2;
 const GpgpuPExperience = () => {
+  const { color } = useControls("color control", {
+    color: {
+      value: "#ff0000", // Default color
+      label: "Sphere Color",
+    },
+  });
   const { gl } = useThree();
 
   //create gpu computation renderer instance
   const gpgpu = useMemo(() => new GPUComputationRenderer(size, size, gl), [gl]);
 
-  const baseTexture = useMemo(() => gpgpu.createTexture(), [gpgpu]);
-  baseTexture.colorSpace = THREE.SRGBColorSpace;
-
-  const data = baseTexture.image.data;
-
-  for (let i = 0; i < data.length; i++) {
-    data[i * 4 + 0] = THREE.MathUtils.randFloatSpread(size);
-    data[i * 4 + 1] = THREE.MathUtils.randFloatSpread(size);
-    data[i * 4 + 2] = THREE.MathUtils.randFloatSpread(size);
-    data[i * 4 + 3] = 1;
-  }
+  const baseTexture = useMemo(() => {
+    const baseTexture = gpgpu.createTexture();
+    baseTexture.colorSpace = THREE.SRGBColorSpace;
+    const data = baseTexture.image.data;
+    for (let i = 0; i < data.length; i++) {
+      data[i * 4 + 0] = THREE.MathUtils.randFloatSpread(size);
+      data[i * 4 + 1] = THREE.MathUtils.randFloatSpread(size);
+      data[i * 4 + 2] = THREE.MathUtils.randFloatSpread(size);
+      data[i * 4 + 3] = 1;
+    }
+    return baseTexture;
+  }, [gpgpu]);
 
   const variable = useMemo(() => {
     const temp = gpgpu.addVariable(
@@ -62,7 +70,6 @@ const GpgpuPExperience = () => {
   const positions = useRef<Float32Array>(new Float32Array(count * 3));
   const references = useRef<Float32Array>(new Float32Array(count * 2));
   const opacities = useRef<Float32Array>(new Float32Array(count));
-  const materialRef = useRef<THREE.MeshBasicMaterial>(null);
 
   const geometry = useRef<THREE.BufferGeometry>(new THREE.BufferGeometry());
   const material = useRef<THREE.ShaderMaterial>(
@@ -80,7 +87,7 @@ const GpgpuPExperience = () => {
           value: gl.getPixelRatio(),
         },
         uColor: {
-          value: new THREE.Color("#19b158"),
+          value: new THREE.Color(color /* "#19b158" */),
         },
       },
     })
@@ -90,14 +97,6 @@ const GpgpuPExperience = () => {
     gpgpu.setVariableDependencies(variable, [variable]);
     //initialize the gpgpu
     gpgpu.init();
-
-    /* const data = baseTexture.image.data;
-    for (let i = 0; i < data.length; i++) {
-      data[i * 4 + 0] = THREE.MathUtils.randFloatSpread(size);
-      data[i * 4 + 1] = THREE.MathUtils.randFloatSpread(size);
-      data[i * 4 + 2] = THREE.MathUtils.randFloatSpread(size);
-      data[i * 4 + 3] = 1;
-    } */
     //fill the positions of particles with random values
     for (let i = 0; i < size; i++) {
       for (let j = 0; j < size; j++) {
@@ -136,19 +135,14 @@ const GpgpuPExperience = () => {
       gpgpu.getCurrentRenderTarget(variable).texture;
   });
 
+  useEffect(() => {
+    material.current.uniforms.uColor.value = new THREE.Color(color);
+  }, [color]);
+
   return (
     <>
       <CameraControls></CameraControls>
-
       <points geometry={geometry.current} material={material.current}></points>
-      {/*  <mesh>
-        <planeGeometry args={[3, 3]} attach={"geometry"}></planeGeometry>
-        <meshBasicMaterial
-          ref={materialRef}
-          attach={"material"}
-         
-        ></meshBasicMaterial>
-      </mesh> */}
     </>
   );
 };
