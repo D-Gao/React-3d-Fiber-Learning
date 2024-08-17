@@ -8,8 +8,10 @@ import { Perf } from "r3f-perf";
 import { InstancedFlow } from "three/examples/jsm/Addons.js";
 import { TextGeometry } from "three/examples/jsm/Addons.js";
 import { Bloom, EffectComposer } from "@react-three/postprocessing";
+import { Resolution } from "postprocessing";
+import { UnrealBloomPass } from "three-stdlib";
 
-extend({ LineMaterial, LineGeometry, Line2, InstancedFlow });
+extend({ LineMaterial, LineGeometry, Line2, InstancedFlow, UnrealBloomPass });
 
 declare module "@react-three/fiber" {
   interface ThreeElements {
@@ -46,14 +48,16 @@ const Circle = () => {
         <color attach="background" args={["#111"]} />
         <CircleExperience></CircleExperience>
         <Perf position={"top-left"}></Perf>
-        {/* <EffectComposer>
+        <EffectComposer>
           <Bloom
             mipmapBlur
             luminanceThreshold={0.0}
-            radius={0.8}
-            intensity={5.2}
+            radius={0.71}
+            intensity={2.5}
+            resolutionX={Resolution.AUTO_SIZE} // The horizontal resolution.
+            resolutionY={Resolution.AUTO_SIZE} // The vertical resolution.
           />
-        </EffectComposer> */}
+        </EffectComposer>
       </Canvas>
     </>
   );

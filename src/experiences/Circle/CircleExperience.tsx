@@ -307,7 +307,7 @@ const CircleExperience = () => {
             dashed={true}
             dashSize={360 / 26}
             gapSize={360 / 26}
-            opacity={0.3}
+            opacity={0.6}
             transparent={true}
           ></lineMaterial>
         </line2>
