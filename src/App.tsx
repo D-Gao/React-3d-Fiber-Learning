@@ -14,6 +14,7 @@ import Book from "./experiences/Book/Book";
 import MiCar from "./experiences/Car/MiCar";
 import Rain from "./experiences/Rain/Rain";
 import Circle from "./experiences/Circle/Circle";
+import GpgpuP from "./experiences/GpgpuP/GpgpuP";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
           <Route path="/su7" element={<MiCar />} />
           <Route path="/rain" element={<Rain />} />
           <Route path="/circle" element={<Circle />} />
+          <Route path="/gpgpup" element={<GpgpuP />} />
         </Routes>
       </Router>
     </div>
