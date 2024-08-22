@@ -15,6 +15,7 @@ import MiCar from "./experiences/Car/MiCar";
 import Rain from "./experiences/Rain/Rain";
 import Circle from "./experiences/Circle/Circle";
 import GpgpuP from "./experiences/GpgpuP/GpgpuP";
+import BoidCanvas from "./experiences/Boid/BoidCanvas";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
           <Route path="/rain" element={<Rain />} />
           <Route path="/circle" element={<Circle />} />
           <Route path="/gpgpup" element={<GpgpuP />} />
+          <Route path="/boid" element={<BoidCanvas />} />
         </Routes>
       </Router>
     </div>
