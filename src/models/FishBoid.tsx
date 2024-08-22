@@ -40,7 +40,7 @@ type GLTFResult = GLTF & {
 };
 
 // the size of the gpgpu texture so the total boid size is 64
-const size = 2;
+const size = 8;
 const BOIDSCOUNT = size ** 2;
 const BOUNDS = 400;
 const BOUNDS_HALF = 400 / 2;
@@ -58,6 +58,8 @@ export function FishBoid(props: JSX.IntrinsicElements["group"]) {
   //update the animation matrix which is a vertices  x animation key frames 2-d matrix
   //so each i row represents the vertex's relative morph position respect to the original position at key frame i
   useEffect(() => {
+    console.log(scene.rotation); // Check if any rotations are being applied
+    console.log(scene.scale);
     if (!group.current) return;
     mixerRef.current = new THREE.AnimationMixer(nodes.Koi_01);
     const clip = animations[12];
@@ -66,8 +68,8 @@ export function FishBoid(props: JSX.IntrinsicElements["group"]) {
     action.play();
 
     const times = clip.duration;
-    const keyframes = Array.from({ length: 100 }, (_, i) => {
-      return (times / 100) * (i + 1);
+    const keyframes = Array.from({ length: 10 }, (_, i) => {
+      return (times / 10) * (i + 1);
     });
 
     const allRelativePositions: { positions: THREE.Vector3[]; time: number }[] =
@@ -149,8 +151,6 @@ export function FishBoid(props: JSX.IntrinsicElements["group"]) {
       }
     }
 
-    console.log(tData);
-
     textureAnimation.current = new THREE.DataTexture(
       tData,
       tWidth,
@@ -160,7 +160,6 @@ export function FishBoid(props: JSX.IntrinsicElements["group"]) {
     );
     textureAnimation.current.needsUpdate = true;
 
-    console.log(textureAnimation.current.image.data);
     /* pointsRef.current!.geometry = new THREE.BufferGeometry();
 
     const positions = allRelativePositions[0].positions;
@@ -446,7 +445,7 @@ export function FishBoid(props: JSX.IntrinsicElements["group"]) {
             vec3 aniPos = texture2D( textureAnimation, vec2( reference.z,   mod( time , reference.w ) ) ).xyz;
             //velocity.z *= -1.;
             newPosition = mat3( modelMatrix ) * ( newPosition + aniPos );
-           /*  velocity.y *= -1.;
+            velocity.y *= -1.;
 						float xz = length( velocity.xz );
             float xy = length( velocity.xy );
             float yz = length( velocity.yz );
@@ -463,7 +462,7 @@ export function FishBoid(props: JSX.IntrinsicElements["group"]) {
 						mat3 matz =  mat3( cosrz , -sinrz, 0, sinrz, cosrz, 0, 0     , 0    , 1 );
 
             newPosition =  maty *matz  *newPosition;
-            newPosition += pos/20.0; */
+            newPosition += pos/50.0;
            
             vec3 transformed = vec3( newPosition );
 					`;
@@ -501,7 +500,11 @@ export function FishBoid(props: JSX.IntrinsicElements["group"]) {
     <>
       <group ref={group} {...props} dispose={null}>
         <group name="Scene" visible={false}>
-          <group name="Fish_Armature" scale={15.017}>
+          <group
+            name="Fish_Armature"
+            scale={15.017}
+            rotation={[-Math.PI / 2, 0, Math.PI / 2]}
+          >
             <primitive object={nodes.Main1} />
             <primitive object={nodes.Main7} />
             <primitive object={nodes.Main8} />

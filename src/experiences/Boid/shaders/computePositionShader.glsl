@@ -14,6 +14,6 @@ void main()	{
     length( velocity.xz ) * delta * 3. +
     max( velocity.y, 0.0 ) * delta * 6. ), 62.83 );
 
-  gl_FragColor = vec4( position * 1. + velocity * delta * 5. , phase );
+  gl_FragColor = vec4( position * 1. + velocity * delta * 15. , phase );
 
 }
