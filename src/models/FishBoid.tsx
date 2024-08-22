@@ -66,8 +66,8 @@ export function FishBoid(props: JSX.IntrinsicElements["group"]) {
     action.play();
 
     const times = clip.duration;
-    const keyframes = Array.from({ length: 10 }, (_, i) => {
-      return (times / 10) * (i + 1);
+    const keyframes = Array.from({ length: 100 }, (_, i) => {
+      return (times / 100) * (i + 1);
     });
 
     const allRelativePositions: { positions: THREE.Vector3[]; time: number }[] =
@@ -121,14 +121,9 @@ export function FishBoid(props: JSX.IntrinsicElements["group"]) {
           morphAttributes.length;
         const lerpAmount =
           ((j / durationAnimation) * morphAttributes.length) % 1;
-        /*  console.log(j);
-        console.log(lerpAmount);
-        console.log(j < durationAnimation && lerpAmount); */
+
         if (j < durationAnimation) {
           let d0, d1;
-
-          /*  //console.log(i);
-          //console.log(morphAttributes[curMorph][i]); */
 
           const currentVex = morphAttributes[curMorph][i].clone();
           const nextVex = morphAttributes[nextMorph][i].clone();
@@ -137,11 +132,7 @@ export function FishBoid(props: JSX.IntrinsicElements["group"]) {
           d1 = nextVex.x;
           if (d0 !== undefined && d1 !== undefined)
             tData[offset + i * 4] = lerp(d0, d1, lerpAmount);
-          /* console.log("d0 -d1");
-          console.log(offset + i * 4);
-          console.log(d0);
-          console.log(d1);
-          console.log(lerp(d0, d1, lerpAmount)); */
+
           d0 = currentVex.y;
           d1 = nextVex.y;
           if (d0 !== undefined && d1 !== undefined)
@@ -350,7 +341,7 @@ export function FishBoid(props: JSX.IntrinsicElements["group"]) {
       //durationAnimation / tHeight fixed value
       const x = (j % size) / size;
       const y = ~~(j / size) / size;
-      reference.push(x, y, bIndex / tWidth, durationAnimation / tHeight);
+      reference.push(x, y, bIndex / tWidth, (durationAnimation + 23) / tHeight);
       seeds.push(bird, r, Math.random(), Math.random());
     }
 
@@ -395,7 +386,7 @@ export function FishBoid(props: JSX.IntrinsicElements["group"]) {
       shader.uniforms.texturePosition = { value: null };
       shader.uniforms.textureVelocity = { value: null };
       shader.uniforms.textureAnimation = { value: textureAnimation.current };
-      shader.uniforms.time = { value: 1.0 };
+      shader.uniforms.time = { value: 0.0 };
       shader.uniforms.size = { value: 1.0 };
       shader.uniforms.delta = { value: 0.0 };
 
@@ -452,10 +443,10 @@ export function FishBoid(props: JSX.IntrinsicElements["group"]) {
             
 
             vec3 velocity = normalize(texture2D( textureVelocity, reference.xy ).xyz);
-            vec3 aniPos = texture2D( textureAnimation, vec2( reference.z, mod( time + ( seeds.x ) * ( ( 0.0004 + seeds.y / 10000.0) + normalize( velocity ) / 20000.0 ), reference.w ) ) ).xyz;
+            vec3 aniPos = texture2D( textureAnimation, vec2( reference.z,   mod( time , reference.w ) ) ).xyz;
             //velocity.z *= -1.;
-            newPosition = mat3( modelMatrix ) * ( newPosition /* + aniPos */ );
-            velocity.y *= -1.;
+            newPosition = mat3( modelMatrix ) * ( newPosition + aniPos );
+           /*  velocity.y *= -1.;
 						float xz = length( velocity.xz );
             float xy = length( velocity.xy );
             float yz = length( velocity.yz );
@@ -465,22 +456,15 @@ export function FishBoid(props: JSX.IntrinsicElements["group"]) {
 						float cosry = velocity.x / xz;
 						float sinry = velocity.z /  xz;
 
-						/* float cosrz = velocity.x / xy;
-						float sinrz = velocity.y / xy;
-
-            float cosrx = velocity.y / yz;
-						float sinrx = velocity.z / yz; */
-
             float cosrz = x / xyz;
 						float sinrz = velocity.y / xyz;
 
-            //mat3 matx =  mat3( 1, 0, 0, 0    , cosrx ,  -sinrx     , 0 , sinrx , cosrx );
 						mat3 maty =  mat3( cosry, 0, sinry, 0    , 1, 0     , -sinry, 0, cosry );
 						mat3 matz =  mat3( cosrz , -sinrz, 0, sinrz, cosrz, 0, 0     , 0    , 1 );
 
-            /* newPosition =  newPosition; */
             newPosition =  maty *matz  *newPosition;
-            newPosition += pos/20.0;
+            newPosition += pos/20.0; */
+           
             vec3 transformed = vec3( newPosition );
 					`;
 
@@ -490,7 +474,7 @@ export function FishBoid(props: JSX.IntrinsicElements["group"]) {
     };
   }, [gpgpu, positionVariable, velocityVariable]);
 
-  useFrame((_, delta) => {
+  useFrame((state, delta) => {
     //NOTE!!!!!! it is important to update the compute shader before .compute() function is called
     positionVariable.material.uniforms.time.value += delta;
 
@@ -504,6 +488,9 @@ export function FishBoid(props: JSX.IntrinsicElements["group"]) {
         gpgpu.getCurrentRenderTarget(positionVariable).texture;
       materialShader.current.uniforms.textureVelocity.value =
         gpgpu.getCurrentRenderTarget(velocityVariable).texture;
+
+      materialShader.current.uniforms.time.value = state.clock.elapsedTime / 1;
+      materialShader.current.uniforms.delta.value = delta;
     }
 
     /* tempMap.current = gpgpu.getCurrentRenderTarget(positionVariable).texture; */
@@ -513,7 +500,7 @@ export function FishBoid(props: JSX.IntrinsicElements["group"]) {
   return (
     <>
       <group ref={group} {...props} dispose={null}>
-        <group name="Scene" visible={true}>
+        <group name="Scene" visible={false}>
           <group name="Fish_Armature" scale={15.017}>
             <primitive object={nodes.Main1} />
             <primitive object={nodes.Main7} />
