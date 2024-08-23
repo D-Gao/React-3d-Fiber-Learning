@@ -34,7 +34,7 @@ type GLTFResult = GLTF & {
     Main8: THREE.Bone;
   };
   materials: {
-    Koi_01: THREE.MeshStandardMaterial;
+    "Koi_01.001": THREE.MeshStandardMaterial;
   };
   animations: GLTFAction[];
 };
@@ -58,8 +58,8 @@ export function FishBoid(props: JSX.IntrinsicElements["group"]) {
   //update the animation matrix which is a vertices  x animation key frames 2-d matrix
   //so each i row represents the vertex's relative morph position respect to the original position at key frame i
   useEffect(() => {
-    console.log(scene.rotation); // Check if any rotations are being applied
-    console.log(scene.scale);
+    console.log(nodes); // Check if any rotations are being applied
+    console.log(materials);
     if (!group.current) return;
     mixerRef.current = new THREE.AnimationMixer(nodes.Koi_01);
     const clip = animations[12];
@@ -312,14 +312,21 @@ export function FishBoid(props: JSX.IntrinsicElements["group"]) {
       /* color = [], */
       reference = [],
       seeds = [],
-      indices = [];
+      indices = [],
+      uv = [];
 
     const totalVertices =
       birdGeo.getAttribute("position").count * 3 * BOIDSCOUNT;
     for (let i = 0; i < totalVertices; i++) {
       const bIndex = i % (birdGeo.getAttribute("position").count * 3);
       vertices.push(birdGeo.getAttribute("position").array[bIndex]);
-      /* color.push(birdGeo.getAttribute("color").array[bIndex]); */
+    }
+
+    const totalUV = birdGeo.getAttribute("uv").count * 2 * BOIDSCOUNT;
+
+    for (let i = 0; i < totalUV; i++) {
+      const bIndex = i % (birdGeo.getAttribute("uv").count * 2);
+      uv.push(birdGeo.getAttribute("uv").array[bIndex]);
     }
 
     let r = Math.random();
@@ -355,6 +362,11 @@ export function FishBoid(props: JSX.IntrinsicElements["group"]) {
     }
 
     boidsGeometry.current.setAttribute(
+      "uv",
+      new THREE.BufferAttribute(new Float32Array(uv), 2)
+    );
+
+    boidsGeometry.current.setAttribute(
       "position",
       new THREE.BufferAttribute(new Float32Array(vertices), 3)
     );
@@ -372,8 +384,12 @@ export function FishBoid(props: JSX.IntrinsicElements["group"]) {
     //init boids
 
     const geometry = boidsGeometry.current;
+    (materials["Koi_01.001"] as THREE.MeshStandardMaterial).map!.wrapS =
+      THREE.RepeatWrapping;
+    (materials["Koi_01.001"] as THREE.MeshStandardMaterial).map!.wrapT =
+      THREE.RepeatWrapping;
     const m = new THREE.MeshStandardMaterial({
-      color: new THREE.Color(0xffffff),
+      map: (materials["Koi_01.001"] as THREE.MeshStandardMaterial).map,
     });
 
     const birdMesh = new THREE.Mesh(geometry, m);
