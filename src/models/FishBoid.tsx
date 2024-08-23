@@ -46,11 +46,10 @@ const BOUNDS = 400;
 const BOUNDS_HALF = 400 / 2;
 
 export function FishBoid(props: JSX.IntrinsicElements["group"]) {
-  const tempMap = useRef();
   const pointsRef = useRef<THREE.Points>(null);
-  const { gl, camera, scene: totalscene } = useThree();
+  const { gl, camera, scene } = useThree();
   const group = React.useRef<THREE.Group>(null);
-  const { scene, nodes, materials, animations } = useGLTF("/models/Koi_01.glb");
+  const { nodes, materials, animations } = useGLTF("/models/Koi_01.glb");
 
   const mixerRef = useRef<THREE.AnimationMixer>();
   const textureAnimation = useRef<THREE.DataTexture>();
@@ -58,8 +57,6 @@ export function FishBoid(props: JSX.IntrinsicElements["group"]) {
   //update the animation matrix which is a vertices  x animation key frames 2-d matrix
   //so each i row represents the vertex's relative morph position respect to the original position at key frame i
   useEffect(() => {
-    console.log(nodes); // Check if any rotations are being applied
-    console.log(materials);
     if (!group.current) return;
     mixerRef.current = new THREE.AnimationMixer(nodes.Koi_01);
     const clip = animations[12];
@@ -83,7 +80,7 @@ export function FishBoid(props: JSX.IntrinsicElements["group"]) {
       const positionAttribute = skinnedGeometry.attributes.position;
       (nodes.Koi_01 as THREE.SkinnedMesh).skeleton.update();
 
-      gl.render(totalscene, camera);
+      gl.render(scene, camera);
       const relativePositions = getDeformedVertices(
         nodes.Koi_01 as THREE.SkinnedMesh
       );
@@ -394,7 +391,7 @@ export function FishBoid(props: JSX.IntrinsicElements["group"]) {
 
     const birdMesh = new THREE.Mesh(geometry, m);
     birdMesh.frustumCulled = false;
-    totalscene.add(birdMesh);
+    scene.add(birdMesh);
     //return;
     //customize the materials shader
     m.onBeforeCompile = (shader) => {
@@ -424,39 +421,10 @@ export function FishBoid(props: JSX.IntrinsicElements["group"]) {
       token = "#include <begin_vertex>";
 
       insert = /* glsl */ `
-						/* vec4 tmpPos = texture2D( texturePosition, reference.xy );
-
-						vec3 pos = tmpPos.xyz;
-						vec3 velocity = normalize(texture2D( textureVelocity, reference.xy ).xyz);
-						vec3 aniPos = texture2D( textureAnimation, vec2( reference.z, mod( time + ( seeds.x ) * ( ( 0.0004 + seeds.y / 10000.0) + normalize( velocity ) / 20000.0 ), reference.w ) ) ).xyz;
-						vec3 newPosition = position;
-
-						newPosition = mat3( modelMatrix ) * ( newPosition + aniPos );
-						newPosition *= size + seeds.y * size * 0.2;
-
-						velocity.z *= -1.;
-						float xz = length( velocity.xz );
-						float xyz = 1.;
-						float x = sqrt( 1. - velocity.y * velocity.y );
-
-						float cosry = velocity.x / xz;
-						float sinry = velocity.z / xz;
-
-						float cosrz = x / xyz;
-						float sinrz = velocity.y / xyz;
-
-						mat3 maty =  mat3( cosry, 0, -sinry, 0    , 1, 0     , sinry, 0, cosry );
-						mat3 matz =  mat3( cosrz , sinrz, 0, -sinrz, cosrz, 0, 0     , 0    , 1 );
-
-						newPosition =  maty * matz * newPosition;
-						newPosition += pos;
-
-						vec3 transformed = vec3( newPosition ); */
             vec4 tmpPos = texture2D( texturePosition, reference.xy );
             vec3 pos = tmpPos.xyz;
             vec3 newPosition = position;
             
-
             vec3 velocity = normalize(texture2D( textureVelocity, reference.xy ).xyz);
             vec3 aniPos = texture2D( textureAnimation, vec2( reference.z,   mod( time , reference.w ) ) ).xyz;
             //velocity.z *= -1.;
@@ -537,9 +505,9 @@ export function FishBoid(props: JSX.IntrinsicElements["group"]) {
         <planeGeometry></planeGeometry>
         <meshBasicMaterial map={tempMap.current}></meshBasicMaterial>
       </mesh> */}
-      <points ref={pointsRef} scale={1} position={[0, 0, 0]}>
+      {/* <points ref={pointsRef} scale={1} position={[0, 0, 0]}>
         <pointsMaterial size={0.02}></pointsMaterial>
-      </points>
+      </points> */}
     </>
   );
 }
