@@ -16,6 +16,7 @@ import Rain from "./experiences/Rain/Rain";
 import Circle from "./experiences/Circle/Circle";
 import GpgpuP from "./experiences/GpgpuP/GpgpuP";
 import BoidCanvas from "./experiences/Boid/BoidCanvas";
+import Genshin from "./experiences/Genshin/Genshin";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
           <Route path="/circle" element={<Circle />} />
           <Route path="/gpgpup" element={<GpgpuP />} />
           <Route path="/boid" element={<BoidCanvas />} />
+          <Route path="/genshin" element={<Genshin />} />
         </Routes>
       </Router>
     </div>
