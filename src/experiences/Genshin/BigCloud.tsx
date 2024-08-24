@@ -65,7 +65,7 @@ const BigCloud = () => {
       >
         <planeGeometry args={[1, 1]}></planeGeometry>
       </mesh> */}
-      <mesh
+      {/* <mesh
         frustumCulled={false}
         geometry={nodes.Plane018.geometry}
         material={material2.current}
@@ -80,6 +80,20 @@ const BigCloud = () => {
         position={[0, 0, -1]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={[1, 1, 1]}
+      /> */}
+      <mesh
+        geometry={nodes.Plane018.geometry}
+        material={material2.current}
+        position={[2542.6754, 8231.0633, -37849.45]}
+        rotation={[Math.PI / 2, 0, 0]}
+        scale={[28208.3906, 28208.4, 28208.4]}
+      />
+      <mesh
+        geometry={nodes.Plane011.geometry}
+        material={material1.current}
+        position={[-24.8545, 662.6854, -28148.0094]}
+        rotation={[Math.PI / 2, 0, 0]}
+        scale={[16595.0156, 16595.0188, 16595.0188]}
       />
     </>
   );

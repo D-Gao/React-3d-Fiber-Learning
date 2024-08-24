@@ -58,6 +58,7 @@ vec3 aces_fitted(vec3 color)
         // 反向的ACES
         vec3 ACES_Inv(vec3 color)
         {
+
             mat3 ACES_INPUT_MAT=mat3_from_rows(
                 vec3(1.76474,-.67577,-.08896),
                 vec3(-.14702,1.16025,-.01322),

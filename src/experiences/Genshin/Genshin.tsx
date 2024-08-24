@@ -22,7 +22,7 @@ const Genshin = () => {
           /*  gl.useLegacyLights = true; */
         }}
         shadows
-        camera={{ far: 1000, position: [0, 0, 10], fov: 45 }}
+        camera={{ far: 10000000, position: [0, 0, 10], fov: 45 }}
       >
         <color attach="background" args={["#309BFF"]} />
         <GenshinExperience></GenshinExperience>
