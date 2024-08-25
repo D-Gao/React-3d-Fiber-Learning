@@ -1,3 +1,4 @@
+
 // https://ycw.github.io/three-shaderlib-skim/dist/#/latest/standard/fragment
 // 将原本的RE_Direct转为自定义的RE_Direct_ToonPhysical
 vec3 geometryPosition=-vViewPosition;
@@ -65,7 +66,7 @@ for(int i=0;i<NUM_SPOT_LIGHTS;i++){
     #undef SPOT_LIGHT_MAP_INDEX
     #if defined(USE_SHADOWMAP)&&(UNROLLED_LOOP_INDEX<NUM_SPOT_LIGHT_SHADOWS)
     spotLightShadow=spotLightShadows[i];
-    directLight.color*=(directLight.visible&&receiveShadow)?getShadow(spotShadowMap[i],spotLightShadow.shadowMapSize,spotLightShadow.shadowBias,spotLightShadow.shadowRadius,vSpotLightCoord[i]):1.;
+    directLight.color*=(directLight.visible&&receiveShadow)?getShadow(spotShadowMap[i],spotLightShadow.shadowMapSize, 1.0  ,spotLightShadow.shadowBias,spotLightShadow.shadowRadius,vSpotLightCoord[i]):1.;
     #endif
     RE_Direct(directLight,geometryPosition,geometryNormal,geometryViewDir,geometryClearcoatNormal,material,reflectedLight);
 }
@@ -82,7 +83,7 @@ for(int i=0;i<NUM_DIR_LIGHTS;i++){
     getDirectionalLightInfo(directionalLight,directLight);
     #if defined(USE_SHADOWMAP)&&(UNROLLED_LOOP_INDEX<NUM_DIR_LIGHT_SHADOWS)
     directionalLightShadow=directionalLightShadows[i];
-    directLight.color*=(directLight.visible&&receiveShadow)?getShadow(directionalShadowMap[i],directionalLightShadow.shadowMapSize,directionalLightShadow.shadowBias,directionalLightShadow.shadowRadius,vDirectionalShadowCoord[i]):1.;
+    directLight.color*=(directLight.visible&&receiveShadow)?getShadow(directionalShadowMap[i],directionalLightShadow.shadowMapSize, 1.0 ,directionalLightShadow.shadowBias,directionalLightShadow.shadowRadius,vDirectionalShadowCoord[i]):1.;
     #endif
     // RE_Direct(directLight,geometryPosition,geometryNormal,geometryViewDir,geometryClearcoatNormal,material,reflectedLight);
     RE_Direct_ToonPhysical(directLight,geometryPosition,geometryNormal,geometryViewDir,geometryClearcoatNormal,material,reflectedLight,metalnessFactor);

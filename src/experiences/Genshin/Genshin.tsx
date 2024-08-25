@@ -22,15 +22,15 @@ const Genshin = () => {
           /*  gl.useLegacyLights = true; */
         }}
         shadows
-        camera={{ far: 10000000, position: [0, 0, 10], fov: 45 }}
+        camera={{ far: 50000, position: [0, 0, 10], fov: 45 }}
       >
-        <color attach="background" args={["#309BFF"]} />
+        {/* <color attach="background" args={["#309BFF"]} /> */}
         <GenshinExperience></GenshinExperience>
         <EffectComposer>
           <Bloom
             blendFunction={BlendFunction.ADD}
             mipmapBlur
-            intensity={0.6}
+            intensity={0.2}
             luminanceThreshold={2}
             resolutionX={Resolution.AUTO_SIZE} // The horizontal resolution.
             resolutionY={Resolution.AUTO_SIZE} // The vertical resolution.

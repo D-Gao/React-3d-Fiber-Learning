@@ -1,11 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useMemo } from "react";
-import { meshList } from "./data/column";
+import { meshList as ll } from "./data/column";
 import * as THREE from "three";
 import * as STDLIB from "three-stdlib";
 import { useGLTF } from "@react-three/drei";
 import { DRACOLoader, GLTFLoader } from "three/examples/jsm/Addons.js";
 import { useThree } from "@react-three/fiber";
+import { getToonMaterialColumn } from "./utils";
+
+const meshList = ll; /* [ll[12], ll[29]]; */
 
 interface MeshInfo {
   object: string;
@@ -69,7 +72,8 @@ const Column = () => {
         model.scene.traverse((obj: THREE.Object3D<THREE.Object3DEventMap>) => {
           if (obj instanceof THREE.Mesh) {
             const material = obj.material as THREE.MeshStandardMaterial;
-            const toonMaterial = material; //getToonMaterialColumn(material);
+            const toonMaterial =
+              /*  material; */ getToonMaterialColumn(material);
             const im = new THREE.InstancedMesh(
               obj.geometry,
               toonMaterial,

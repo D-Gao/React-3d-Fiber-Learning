@@ -3,7 +3,7 @@ import * as THREE from "three";
 import lights_fragment_beginToon from "./shaders/common/lights_fragment_beginToon.glsl";
 import ACES_fog_fragment from "./shaders/common/ACES_fog_fragment.glsl";
 import RE_Direct_ToonPhysical from "./shaders/common/RE_Direct_ToonPhysical.glsl";
-import RE_Direct_ToonPhysical_Road from "./shaders/common/Common/RE_Direct_ToonPhysical_Road.glsl";
+import RE_Direct_ToonPhysical_Road from "./shaders/common/RE_Direct_ToonPhysical_Road.glsl";
 
 const getToonMaterialColumn = (material: THREE.MeshStandardMaterial) => {
   material.metalness = 0.3;
