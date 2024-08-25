@@ -9,6 +9,7 @@ import Column from "./Column";
 import { useControls } from "leva";
 import PolarLight from "./PolarLight";
 import StarParticles from "./StarParticles";
+import Road from "./Road";
 
 const GenshinExperience = () => {
   const { camera } = useThree();
@@ -16,14 +17,14 @@ const GenshinExperience = () => {
   const { intensitydr, intensityab, color, colordr } = useControls(
     "Character Control",
     {
-      intensitydr: { value: 118, min: 1, max: 1000, step: 1 },
+      intensitydr: { value: 61, min: 1, max: 1000, step: 1 },
       intensityab: { value: 18, min: 1, max: 100, step: 0.1 },
       color: {
         value: "#b7cfff", // Default color //  0f6eff
         label: "Sphere Color",
       },
       colordr: {
-        value: "#ffb89e", // Default color //  0f6eff
+        value: "#ffd9b6", // Default color //  0f6eff
         label: "Sphere Color",
       },
     }
@@ -42,11 +43,15 @@ const GenshinExperience = () => {
     <>
       <CameraControls></CameraControls>
       <GradientBackground></GradientBackground>
+      <Road></Road>
       {/* <PolarLight></PolarLight>
       <StarParticles></StarParticles>
       <BigCloud></BigCloud>
       <Cloud></Cloud>
-      <Column></Column>
+
+
+       */}
+      {/*  <Column></Column> */}
       <directionalLight
         ref={drRef}
         color={colordr}
@@ -60,7 +65,7 @@ const GenshinExperience = () => {
         intensity={intensitydr}
         castShadow
       ></directionalLight>
-      <ambientLight color={color} intensity={intensityab}></ambientLight> */}
+      <ambientLight color={color} intensity={intensityab}></ambientLight>
     </>
   );
 };

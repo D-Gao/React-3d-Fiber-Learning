@@ -33,7 +33,7 @@ const Genshin = () => {
           <Bloom
             blendFunction={BlendFunction.ADD}
             mipmapBlur
-            intensity={0.3}
+            intensity={0.4}
             luminanceThreshold={2}
             resolutionX={Resolution.AUTO_SIZE} // The horizontal resolution.
             resolutionY={Resolution.AUTO_SIZE} // The vertical resolution.
