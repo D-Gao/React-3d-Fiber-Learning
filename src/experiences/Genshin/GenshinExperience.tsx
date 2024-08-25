@@ -7,6 +7,8 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import Column from "./Column";
 import { useControls } from "leva";
+import PolarLight from "./PolarLight";
+import StarParticles from "./StarParticles";
 
 const GenshinExperience = () => {
   const { camera } = useThree();
@@ -28,19 +30,22 @@ const GenshinExperience = () => {
   );
 
   useEffect(() => {
+    if (!drRef.current) return;
+
     const originPos = new THREE.Vector3(10000, 0, 6000);
     originPos.y = Math.hypot(originPos.x, originPos.z) / 1.35;
 
-    drRef.current!.position.copy(camera.position.clone().add(originPos));
+    drRef.current.position.copy(camera.position.clone().add(originPos));
   }, []);
 
   return (
     <>
       <CameraControls></CameraControls>
       <GradientBackground></GradientBackground>
-
-      {/* <BigCloud></BigCloud>
-      <Cloud></Cloud> */}
+      {/* <PolarLight></PolarLight>
+      <StarParticles></StarParticles>
+      <BigCloud></BigCloud>
+      <Cloud></Cloud>
       <Column></Column>
       <directionalLight
         ref={drRef}
@@ -55,7 +60,7 @@ const GenshinExperience = () => {
         intensity={intensitydr}
         castShadow
       ></directionalLight>
-      <ambientLight color={color} intensity={intensityab}></ambientLight>
+      <ambientLight color={color} intensity={intensityab}></ambientLight> */}
     </>
   );
 };
