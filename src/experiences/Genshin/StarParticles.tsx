@@ -50,8 +50,6 @@ const StarParticles = () => {
       Array.from({ length: count }, () => [1, 1, 1].map(Math.random)).flat()
     );
     geometry.setAttribute("aRandom", new THREE.BufferAttribute(randoms, 3));
-
-    console.log("what");
   }, []);
 
   useFrame((_, delta) => {
