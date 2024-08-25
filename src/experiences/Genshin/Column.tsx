@@ -8,7 +8,7 @@ import { DRACOLoader, GLTFLoader } from "three/examples/jsm/Addons.js";
 import { useThree } from "@react-three/fiber";
 import { getToonMaterialColumn } from "./utils";
 
-const meshList = ll; /* [ll[12], ll[29]]; */
+const meshList = ll; /*  [ll[12], ll[29]]; */
 
 interface MeshInfo {
   object: string;
@@ -73,7 +73,9 @@ const Column = () => {
           if (obj instanceof THREE.Mesh) {
             const material = obj.material as THREE.MeshStandardMaterial;
             const toonMaterial =
-              /*  material; */ getToonMaterialColumn(material);
+              /*   material; */ getToonMaterialColumn(material);
+            toonMaterial.map!.minFilter = THREE.LinearMipMapLinearFilter;
+            toonMaterial.map!.magFilter = THREE.LinearFilter;
             const im = new THREE.InstancedMesh(
               obj.geometry,
               toonMaterial,

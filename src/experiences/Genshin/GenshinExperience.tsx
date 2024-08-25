@@ -39,20 +39,18 @@ const GenshinExperience = () => {
       <CameraControls></CameraControls>
       <GradientBackground></GradientBackground>
 
-      <BigCloud></BigCloud>
-      <Cloud></Cloud>
+      {/* <BigCloud></BigCloud>
+      <Cloud></Cloud> */}
       <Column></Column>
       <directionalLight
         ref={drRef}
         color={colordr}
-        shadow-mapSize-width={1024}
-        shadow-mapSize-height={1024}
         shadow-camera-top={400}
         shadow-camera-bottom={-100}
         shadow-camera-left={-100}
         shadow-camera-right={400}
-        shadow-camera-near={1}
-        shadow-camera-far={50000}
+        shadow-camera-near={0.5}
+        shadow-camera-far={10000}
         shadow-bias={-0.00005}
         intensity={intensitydr}
         castShadow
