@@ -20,7 +20,7 @@ import Genshin from "./experiences/Genshin/Genshin";
 
 function App() {
   return (
-    <div className="h-svh w-screen">
+    <div className="h-svh w-screen relative">
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
