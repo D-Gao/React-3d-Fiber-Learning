@@ -5,7 +5,7 @@ import starParticleVertexShader from "./shaders/star/vert.glsl";
 import starParticleFragmentShader from "./shaders/star/frag.glsl";
 import { useFrame, useThree } from "@react-three/fiber";
 const StarParticles = () => {
-  const { gl } = useThree();
+  const { gl, camera } = useThree();
   const pointsRef = useRef<THREE.Points>(null);
   const [texture] = useTexture(["textures/genshin/Tex_0075.png"]);
 
@@ -54,6 +54,11 @@ const StarParticles = () => {
 
   useFrame((_, delta) => {
     shaderMaterial.uniforms.iTime.value += delta;
+
+    // make the points group to follow the camera's movement
+    pointsRef.current?.position.copy(
+      new THREE.Vector3(0, 0, camera.position.z - 1000)
+    );
   });
 
   return (

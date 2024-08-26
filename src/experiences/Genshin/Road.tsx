@@ -1,11 +1,11 @@
 import * as THREE from "three";
 import { useGLTF } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
-import { useEffect } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { getToonMaterialRoad } from "./utils";
 import { useFrame, useThree } from "@react-three/fiber";
 import gsap from "gsap";
-const worldPosition = new THREE.Vector3();
+
 type GLTFResult = GLTF & {
   nodes: {
     SM_MERGED517: THREE.Mesh;
@@ -39,7 +39,7 @@ type GLTFResult = GLTF & {
   };
 };
 const offset = new THREE.Vector3(0, 34, 200);
-const zLength = 2120.4027;
+const zLength = 212.4027;
 const doubleZLength = 2 * zLength;
 const Road = () => {
   const { camera } = useThree();
@@ -47,6 +47,9 @@ const Road = () => {
   const { scene, nodes, materials } = useGLTF(
     "/models/SM_Road.glb"
   ) as GLTFResult;
+
+  const worldPosition = useMemo(() => new THREE.Vector3(), []);
+  const originPosList = useRef<THREE.Vector3[]>([]);
 
   useEffect(() => {
     const roadCount = scene.children.length; // = 12
@@ -59,10 +62,17 @@ const Road = () => {
         obj.material = toonMaterial;
         obj.frustumCulled = false;
 
-        obj.position.multiplyScalar(0.1).add(new THREE.Vector3(0, -200, -1000));
+        /* obj.position.multiplyScalar(1).add(new THREE.Vector3(0, -200, -1000)); */
         /* obj.scale.multiplyScalar(1); */
         /*  obj.position.sub(offset.clone()); */
+        /*  console.log(obj.position); */
       }
+    });
+
+    scene.children.forEach((obj: THREE.Object3D<THREE.Object3DEventMap>) => {
+      obj.position.multiplyScalar(0.1);
+      obj.scale.multiplyScalar(0.1);
+      obj.position.sub(offset);
     });
 
     // clone the same raod and put them one after another
@@ -70,22 +80,33 @@ const Road = () => {
       const cloned = scene.children[i].clone();
       cloned.position.add(new THREE.Vector3(0, 0, -zLength));
       scene.add(cloned);
-      scene.scale.multiplyScalar(0.8);
+      //scene.scale.multiplyScalar(0.8);
     }
+
     totalScene.add(scene);
+    scene.children.forEach((item, i) => {
+      originPosList.current.push(item.position.clone());
+    });
+    console.log(originPosList.current);
   }, []);
 
   //update the 4
   useFrame(() => {
-    /*  console.log("camera position");
+    //make sure the original position array is filled with values
+    if (!originPosList.current[0]) return;
+    /* return; */
+    /* 
     console.log(camera.position.z); */
+    /* console.log("camera position"); */
     scene.children.forEach((item, i) => {
       //check if the block is behind the camera
       /* console.log(item.position.z > camera.position.z); */
-      item.getWorldPosition(worldPosition);
+      //item.getWorldPosition(worldPosition);
+
+      /* console.log(worldPosition.z); */
       /* console.log(worldPosition.z);
       console.log(worldPosition.z > camera.position.z); */
-      if (worldPosition.z > camera.position.z + 100) {
+      if (item.position.z > camera.position.z + 0) {
         /* // 创建门时应停止路块动画
           if (i % this.roadCount === 0 && this.isDoorCreateActive) {
             this.isRunning = false;
@@ -95,7 +116,16 @@ const Road = () => {
         // 把路块放到后面
         const zOffset = new THREE.Vector3(0, 0, doubleZLength);
         item.position.sub(zOffset);
-        const tartgetPosition = item.position.clone();
+        try {
+          originPosList.current[i].sub(zOffset);
+        } catch (error) {
+          console.error(error);
+          console.error(originPosList.current);
+          console.error(i);
+          console.error(originPosList.current[i]);
+        }
+
+        const tartgetPosition = originPosList.current[i].clone();
         //this.originPosList[i].sub(zOffset);
         // 让路块从下面浮起来
         //const originPos = this.originPosList[i].clone();

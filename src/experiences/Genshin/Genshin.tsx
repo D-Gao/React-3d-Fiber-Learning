@@ -1,3 +1,4 @@
+import { Loader } from "@react-three/drei";
 import GenshinExperience from "./GenshinExperience";
 import { Canvas } from "@react-three/fiber";
 import {
@@ -23,6 +24,7 @@ const Genshin = () => {
           gl.outputColorSpace = THREE.LinearSRGBColorSpace;
           // 使用旧版光照模型
           /*  gl.useLegacyLights = true; */
+          /* camera.lookAt(0, 100, 0); */
         }}
         shadows
         camera={{ far: 100000, position: [0, 10, 10], fov: 45 }}
@@ -41,8 +43,9 @@ const Genshin = () => {
           <ToneMapping mode={ToneMappingMode.ACES_FILMIC}></ToneMapping>
           <FXAA />
         </EffectComposer>
-        <Perf position={"top-left"}></Perf>
+        {/*  <Perf position={"top-left"}></Perf> */}
       </Canvas>
+      <Loader></Loader>
     </>
   );
 };

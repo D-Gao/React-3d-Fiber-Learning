@@ -12,8 +12,8 @@ const CameraFoward = ({ ref }: { ref: React.RefObject<CameraControls> }) => {
   const [foward, setFoward] = useState(true);
 
   const tl = useRef<gsap.core.Timeline>(gsap.timeline());
-  const center = useRef(new THREE.Vector3(0, 0, 10));
-  const cameraTarget = useRef(new THREE.Vector3(0, 0, 0));
+  const center = useRef(new THREE.Vector3(0, 10, 10));
+  const cameraTarget = useRef(new THREE.Vector3(0, 10, 5));
   useEffect(() => {
     if (!foward || !ref.current) return;
     void ref.current.setTarget(
@@ -28,10 +28,10 @@ const CameraFoward = ({ ref }: { ref: React.RefObject<CameraControls> }) => {
         onUpdate: () => {
           /* console.log(center.current.z); */
           center.current.add(
-            new THREE.Vector3(0, 0, -params.speed).multiplyScalar(0.5)
+            new THREE.Vector3(0, 0, -params.speed).multiplyScalar(1)
           );
           cameraTarget.current.add(
-            new THREE.Vector3(0, 0, -params.speed).multiplyScalar(0.5)
+            new THREE.Vector3(0, 0, -params.speed).multiplyScalar(1)
           );
           /* console.log()
           camera.position.copy(center.current.clone()); */

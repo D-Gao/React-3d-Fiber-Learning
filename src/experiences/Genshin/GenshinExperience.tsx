@@ -42,7 +42,7 @@ const GenshinExperience = () => {
 
     drRef.current.position.copy(camera.position.clone().add(originPos));
 
-    /* cameraControl.current!.setTarget(0,0,0) */
+    void cameraControl.current!.setTarget(0, 10, 5, false);
   }, []);
 
   return (
