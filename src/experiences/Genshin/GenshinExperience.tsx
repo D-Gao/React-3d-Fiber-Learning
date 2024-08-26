@@ -10,9 +10,13 @@ import { useControls } from "leva";
 import PolarLight from "./PolarLight";
 import StarParticles from "./StarParticles";
 import Road from "./Road";
+import CameraFoward from "./CameraFoward";
 
 const GenshinExperience = () => {
   const { camera } = useThree();
+  const cameraControl = useRef<CameraControls>(null);
+  CameraFoward({ ref: cameraControl });
+
   const drRef = useRef<THREE.DirectionalLight>(null);
   const { intensitydr, intensityab, color, colordr } = useControls(
     "Character Control",
@@ -37,21 +41,21 @@ const GenshinExperience = () => {
     originPos.y = Math.hypot(originPos.x, originPos.z) / 1.35;
 
     drRef.current.position.copy(camera.position.clone().add(originPos));
+
+    /* cameraControl.current!.setTarget(0,0,0) */
   }, []);
 
   return (
     <>
-      <CameraControls></CameraControls>
+      <CameraControls ref={cameraControl}></CameraControls>
       <GradientBackground></GradientBackground>
       <Road></Road>
-      {/* <PolarLight></PolarLight>
+      <PolarLight></PolarLight>
       <StarParticles></StarParticles>
       <BigCloud></BigCloud>
       <Cloud></Cloud>
 
-
-       */}
-      {/*  <Column></Column> */}
+      <Column></Column>
       <directionalLight
         ref={drRef}
         color={colordr}

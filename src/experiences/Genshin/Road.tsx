@@ -3,8 +3,9 @@ import { useGLTF } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
 import { useEffect } from "react";
 import { getToonMaterialRoad } from "./utils";
-import { useThree } from "@react-three/fiber";
-
+import { useFrame, useThree } from "@react-three/fiber";
+import gsap from "gsap";
+const worldPosition = new THREE.Vector3();
 type GLTFResult = GLTF & {
   nodes: {
     SM_MERGED517: THREE.Mesh;
@@ -39,7 +40,9 @@ type GLTFResult = GLTF & {
 };
 const offset = new THREE.Vector3(0, 34, 200);
 const zLength = 2120.4027;
+const doubleZLength = 2 * zLength;
 const Road = () => {
+  const { camera } = useThree();
   const { gl, scene: totalScene } = useThree();
   const { scene, nodes, materials } = useGLTF(
     "/models/SM_Road.glb"
@@ -57,8 +60,8 @@ const Road = () => {
         obj.frustumCulled = false;
 
         obj.position.multiplyScalar(0.1).add(new THREE.Vector3(0, -200, -1000));
-        obj.scale.multiplyScalar(1);
-        obj.position.sub(offset.clone());
+        /* obj.scale.multiplyScalar(1); */
+        /*  obj.position.sub(offset.clone()); */
       }
     });
 
@@ -71,6 +74,42 @@ const Road = () => {
     }
     totalScene.add(scene);
   }, []);
+
+  //update the 4
+  useFrame(() => {
+    /*  console.log("camera position");
+    console.log(camera.position.z); */
+    scene.children.forEach((item, i) => {
+      //check if the block is behind the camera
+      /* console.log(item.position.z > camera.position.z); */
+      item.getWorldPosition(worldPosition);
+      /* console.log(worldPosition.z);
+      console.log(worldPosition.z > camera.position.z); */
+      if (worldPosition.z > camera.position.z + 100) {
+        /* // 创建门时应停止路块动画
+          if (i % this.roadCount === 0 && this.isDoorCreateActive) {
+            this.isRunning = false;
+            this.createDoor(item.position.z);
+            this.emit("stop-camera");
+          } */
+        // 把路块放到后面
+        const zOffset = new THREE.Vector3(0, 0, doubleZLength);
+        item.position.sub(zOffset);
+        const tartgetPosition = item.position.clone();
+        //this.originPosList[i].sub(zOffset);
+        // 让路块从下面浮起来
+        //const originPos = this.originPosList[i].clone();
+        item.position.add(new THREE.Vector3(0, -70, 0));
+        gsap.to(item.position, {
+          x: tartgetPosition.x,
+          y: tartgetPosition.y,
+          z: tartgetPosition.z,
+          duration: 2,
+          ease: "back.out",
+        });
+      }
+    });
+  });
 
   return (
     <>

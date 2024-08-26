@@ -16,7 +16,7 @@ const Genshin = () => {
       <Canvas
         gl={{ antialias: true, logarithmicDepthBuffer: true }}
         dpr={[1, 2]}
-        onCreated={({ gl }) => {
+        onCreated={({ gl, camera }) => {
           // 禁用颜色管理
           THREE.ColorManagement.enabled = false;
           // 设置输出颜色空间
@@ -25,7 +25,7 @@ const Genshin = () => {
           /*  gl.useLegacyLights = true; */
         }}
         shadows
-        camera={{ far: 100000, position: [0, 0, 10], fov: 45 }}
+        camera={{ far: 100000, position: [0, 10, 10], fov: 45 }}
       >
         {/* <color attach="background" args={["#309BFF"]} /> */}
         <GenshinExperience></GenshinExperience>
