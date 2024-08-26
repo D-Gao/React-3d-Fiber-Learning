@@ -15,7 +15,7 @@ import CameraFoward from "./CameraFoward";
 const GenshinExperience = () => {
   const { camera } = useThree();
   const cameraControl = useRef<CameraControls>(null);
-  CameraFoward({ ref: cameraControl });
+  /*  CameraFoward({ ref: cameraControl }); */
 
   const drRef = useRef<THREE.DirectionalLight>(null);
   const { intensitydr, intensityab, color, colordr } = useControls(
@@ -50,12 +50,12 @@ const GenshinExperience = () => {
       <CameraControls ref={cameraControl}></CameraControls>
       <GradientBackground></GradientBackground>
       <Road></Road>
-      <PolarLight></PolarLight>
+      {/* <PolarLight></PolarLight>
       <StarParticles></StarParticles>
       <BigCloud></BigCloud>
       <Cloud></Cloud>
 
-      <Column></Column>
+      <Column></Column> */}
       <directionalLight
         ref={drRef}
         color={colordr}
