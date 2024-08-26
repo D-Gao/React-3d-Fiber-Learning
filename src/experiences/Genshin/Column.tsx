@@ -7,6 +7,7 @@ import { useGLTF } from "@react-three/drei";
 import { DRACOLoader, GLTFLoader } from "three/examples/jsm/Addons.js";
 import { useThree } from "@react-three/fiber";
 import { getToonMaterialColumn } from "./utils";
+import LoadColumns from "./LoadColumns";
 
 const meshList = ll; /*  [ll[12], ll[29]]; */
 
@@ -19,6 +20,7 @@ interface MeshInfo {
 
 const Column = () => {
   const { scene } = useThree();
+  const { columnModels } = LoadColumns();
 
   const meshInfos = useMemo(() => {
     return meshList.map((item) => {
@@ -63,17 +65,43 @@ const Column = () => {
   }, [meshGroup]);
 
   useEffect(() => {
-    const loader = new GLTFLoader();
+    /* const loader = new GLTFLoader();
     const dracoLoader = new DRACOLoader();
     dracoLoader.setDecoderPath("/draco/"); // Specify the path to the Draco decoder files
-    loader.setDRACOLoader(dracoLoader);
+    loader.setDRACOLoader(dracoLoader); */
     instanceInfos.forEach((item) => {
-      loader.load(`/models/${item.object}.glb`, (model) => {
+      const model = columnModels[item.object as keyof typeof columnModels];
+      model.scene.traverse((obj: THREE.Object3D<THREE.Object3DEventMap>) => {
+        if (obj instanceof THREE.Mesh) {
+          const material = obj.material as THREE.MeshStandardMaterial;
+          const toonMaterial = getToonMaterialColumn(material);
+          toonMaterial.map!.minFilter = THREE.LinearMipMapLinearFilter;
+          toonMaterial.map!.magFilter = THREE.LinearFilter;
+          const im = new THREE.InstancedMesh(
+            obj.geometry,
+            toonMaterial,
+            item.instanceList.length
+          );
+          im.castShadow = true;
+          im.frustumCulled = false;
+          item.meshList.push(im);
+          scene.add(im);
+        }
+      });
+      item.meshList.forEach((mesh) => {
+        item.instanceList.forEach((e, i) => {
+          const mat = new THREE.Matrix4();
+          mat.compose(e.position, e.rotation, e.scale);
+          mesh.setMatrixAt(i, mat);
+        });
+        mesh.instanceMatrix.needsUpdate = true;
+      });
+
+      /*  loader.load(`/models/${item.object}.glb`, (model) => {
         model.scene.traverse((obj: THREE.Object3D<THREE.Object3DEventMap>) => {
           if (obj instanceof THREE.Mesh) {
             const material = obj.material as THREE.MeshStandardMaterial;
-            const toonMaterial =
-              /*   material; */ getToonMaterialColumn(material);
+            const toonMaterial = getToonMaterialColumn(material);
             toonMaterial.map!.minFilter = THREE.LinearMipMapLinearFilter;
             toonMaterial.map!.magFilter = THREE.LinearFilter;
             const im = new THREE.InstancedMesh(
@@ -96,7 +124,7 @@ const Column = () => {
           });
           mesh.instanceMatrix.needsUpdate = true;
         });
-      });
+      }); */
     });
   }, [instanceInfos, scene]);
 
