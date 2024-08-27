@@ -188,6 +188,7 @@ const Road = () => {
       doorModel.scene.position.copy(
         new THREE.Vector3(0, -offset.y, z - zLength - 14)
       );
+      doorModel.scene.visible = true;
     }
 
     console.log("creating doors");
@@ -258,8 +259,9 @@ const Road = () => {
 
       mixer.update(-delta / 1000 / 2);
 
-      if (currentTime <= duration) {
+      if (currentTime <= 0.01) {
         doorAlreadyCreated.current = false;
+        doorModel.scene.visible = false;
         setRunning(true);
         cancelAnimationFrame(animationId);
       } else requestAnimationFrame(animate);

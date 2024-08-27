@@ -44,11 +44,11 @@ const CameraFoward = ({ ref }: { ref: React.RefObject<CameraControls> }) => {
           camera.position.copy(center.current.clone()); */
           void ref.current!.setPosition(
             ...center.current.clone().toArray(),
-            false
+            true
           );
           void ref.current!.setTarget(
             ...cameraTarget.current.clone().toArray(),
-            false
+            true
           );
         },
         repeat: -1,
