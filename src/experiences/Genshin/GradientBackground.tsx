@@ -12,10 +12,10 @@ const params = {
 };
 
 const GradientBackground = () => {
-  const { stop1, stop2 } = useControls("Gradient Control", {
+  /* const { stop1, stop2 } = useControls("Gradient Control", {
     stop1: { value: params.stop1, min: 0, max: 1, step: 0.1 },
     stop2: { value: params.stop2, min: 0, max: 1, step: 0.1 },
-  });
+  }); */
 
   const shaderMaterialRef = useRef<THREE.ShaderMaterial>(
     new THREE.ShaderMaterial({
@@ -36,19 +36,19 @@ const GradientBackground = () => {
           value: new THREE.Color(params.color3),
         },
         uStop1: {
-          value: stop1,
+          value: params.stop1,
         },
         uStop2: {
-          value: stop2,
+          value: params.stop2,
         },
       },
     })
   );
 
-  useEffect(() => {
+  /* useEffect(() => {
     shaderMaterialRef.current.uniforms.uStop1.value = stop1;
     shaderMaterialRef.current.uniforms.uStop2.value = stop2;
-  }, [stop1, stop2]);
+  }, [stop1, stop2]); */
 
   return (
     <>

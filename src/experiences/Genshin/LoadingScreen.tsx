@@ -21,21 +21,24 @@ export const LoadingScreen = (/* { started, onStarted } */) => {
     setStarted(true);
 
     ref.current!.style.opacity = "0";
+    ref.current!.style.transition = "opacity 2s ease-in";
+    ref.current!.style.pointerEvents = "none";
     startBgm();
   };
-  const handleTransitionEnd = () => {
+  /* const handleTransitionEnd = () => {
     if (started) {
       ref.current!.remove();
     }
-  };
+  }; */
 
   return (
     <>
       <div
         ref={ref}
-        className={`loader-screen fixed z-10 inset-0 bg-white transition-opacity duration-1000 opacity-100
+        className={`/* loader-screen */ fixed z-10 inset-0 bg-white transition-opacity duration-1000 opacity-100
          `}
-        onTransitionEnd={handleTransitionEnd}
+        /*  onTransitionEnd={handleTransitionEnd} */
+        style={{ willChange: "opacity " }}
       >
         <div className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
           <img
@@ -57,7 +60,7 @@ export const LoadingScreen = (/* { started, onStarted } */) => {
             <button
               className="loadingScreen__button"
               /* disabled={progress < 100} */
-              onClick={startGame}
+              onClick={() => void startGame()}
             >
               启动
             </button>

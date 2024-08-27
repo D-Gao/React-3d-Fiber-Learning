@@ -192,7 +192,7 @@ const Road = () => {
       doorLoaded.current = true;
     } else {
       doorModel.scene.position.copy(
-        new THREE.Vector3(0, -offset.y, z - zLength - 14)
+        new THREE.Vector3(0, -offset.y, z - zLength - 150)
       );
       doorModel.scene.visible = true;
     }
@@ -264,7 +264,7 @@ const Road = () => {
 
       mixer.update(-delta / 1000 / 2);
 
-      if (currentTime <= 0.01) {
+      if (currentTime <= 0.1) {
         doorAlreadyCreated.current = false;
         doorModel.scene.visible = false;
         setRunning(true);

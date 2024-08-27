@@ -21,7 +21,7 @@ const GenshinExperience = () => {
   const tl = useRef(gsap.timeline());
 
   const drRef = useRef<THREE.DirectionalLight>(null);
-  const { intensitydr, intensityab, color, colordr } = useControls(
+  /* const { intensitydr, intensityab, color, colordr } = useControls(
     "Character Control",
     {
       intensitydr: { value: 61, min: 1, max: 1000, step: 1 },
@@ -35,7 +35,14 @@ const GenshinExperience = () => {
         label: "Sphere Color",
       },
     }
-  );
+  ); */
+
+  const intensitydr = 61;
+  const intensityab = 18;
+
+  const color = "#b7cfff";
+
+  const colordr = "#ffd9b6";
 
   useEffect(() => {
     if (!drRef.current) return;

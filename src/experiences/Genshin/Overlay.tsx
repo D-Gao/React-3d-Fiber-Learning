@@ -63,7 +63,7 @@ const Overlay = () => {
       </div>
 
       <div
-        className="enter-bg absolute"
+        className="enter-bg absolute hidden"
         style={{ bottom: "4vmin", left: "2%", width: "96%" }}
       >
         <div
