@@ -83,11 +83,6 @@ const Road = () => {
         const toonMaterial = getToonMaterialRoad(material, gl);
         obj.material = toonMaterial;
         obj.frustumCulled = false;
-
-        /* obj.position.multiplyScalar(1).add(new THREE.Vector3(0, -200, -1000)); */
-        /* obj.scale.multiplyScalar(1); */
-        /*  obj.position.sub(offset.clone()); */
-        /*  console.log(obj.position); */
       }
     });
 
@@ -205,20 +200,10 @@ const Road = () => {
     console.log("creating doors");
 
     doorAction(1.25);
-
-    //
-    /* setTimeout(() => {
-      openDoor();
-    }, 5000); */
   };
 
   const destroyDoor = () => {
     doorActionBackwards(0);
-
-    //
-    /* setTimeout(() => {
-      openDoor();
-    }, 5000); */
   };
 
   const openDoor = () => {

@@ -12,11 +12,12 @@ import StarParticles from "./StarParticles";
 import Road from "./Road";
 import CameraFoward from "./CameraFoward";
 import gsap from "gsap";
+import HashFog from "./HashFog";
 
 const GenshinExperience = () => {
   const { camera } = useThree();
   const cameraControl = useRef<CameraControls>(null);
-  CameraFoward({ ref: cameraControl });
+  /*  CameraFoward({ ref: cameraControl }); */
   const tl = useRef(gsap.timeline());
 
   const drRef = useRef<THREE.DirectionalLight>(null);
@@ -56,7 +57,7 @@ const GenshinExperience = () => {
       <StarParticles></StarParticles>
       <BigCloud></BigCloud>
       <Cloud></Cloud>
-
+      <HashFog></HashFog>
       <Column></Column>
       <directionalLight
         ref={drRef}

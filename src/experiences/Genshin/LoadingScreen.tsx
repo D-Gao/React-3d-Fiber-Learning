@@ -14,12 +14,11 @@ export const LoadingScreen = (/* { started, onStarted } */) => {
     if (progress == 100) setReady(true);
   }, [progress]);
 
-  const startGame = () => {
+  const startGame = async () => {
+    await playDuang();
+    startBgm();
     //should fadeout the loading screen and start the bgm
     setStarted(true);
-
-    startBgm();
-    void playDuang();
   };
   const handleTransitionEnd = () => {
     if (started) {
