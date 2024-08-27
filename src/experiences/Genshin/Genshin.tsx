@@ -19,7 +19,7 @@ const Genshin = () => {
       <Canvas
         className="over"
         gl={{ antialias: true, logarithmicDepthBuffer: true }}
-        dpr={[1, 1]}
+        dpr={[1, 2]}
         onCreated={({ gl, camera }) => {
           // 禁用颜色管理
           THREE.ColorManagement.enabled = false;
@@ -29,6 +29,7 @@ const Genshin = () => {
         shadows
         camera={{ far: 100000, position: [0, 10, 10], fov: 45 }}
       >
+        <fog attach="fog" args={[0x389af2, 5000, 10000]} />
         {/* <Perf position={"top-left"}></Perf> */}
 
         <GenshinExperience></GenshinExperience>

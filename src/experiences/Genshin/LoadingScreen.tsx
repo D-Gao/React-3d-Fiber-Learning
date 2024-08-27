@@ -16,9 +16,12 @@ export const LoadingScreen = (/* { started, onStarted } */) => {
 
   const startGame = async () => {
     await playDuang();
-    startBgm();
+
     //should fadeout the loading screen and start the bgm
     setStarted(true);
+
+    ref.current!.style.opacity = "0";
+    startBgm();
   };
   const handleTransitionEnd = () => {
     if (started) {
@@ -30,9 +33,8 @@ export const LoadingScreen = (/* { started, onStarted } */) => {
     <>
       <div
         ref={ref}
-        className={`loader-screen fixed z-10 inset-0 bg-white transition-opacity duration-1000 ${
-          started ? "opacity-0" : "opacity-100"
-        } `}
+        className={`loader-screen fixed z-10 inset-0 bg-white transition-opacity duration-1000 opacity-100
+         `}
         onTransitionEnd={handleTransitionEnd}
       >
         <div className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
