@@ -2,7 +2,12 @@ import * as THREE from "three";
 import { useGLTF } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
 import { useEffect, useMemo, useRef } from "react";
-import { getToonMaterialDoor, getToonMaterialRoad } from "./utils";
+import {
+  getToonMaterialDoor,
+  getToonMaterialRoad,
+  playCreateDoor,
+  playDiveIn,
+} from "./utils";
 import { useFrame, useThree } from "@react-three/fiber";
 import gsap from "gsap";
 import { GLTFResult as DoorGLTFResult } from "@/models/Door";
@@ -222,6 +227,7 @@ const Road = () => {
     setTimeout(
       () => {
         setDiveIn();
+        void playDiveIn();
       },
       (duration * 1000) / 2
     );
@@ -229,6 +235,7 @@ const Road = () => {
 
   //function to compute the animation for the entire input duration
   const doorAction = (duration: number) => {
+    void playCreateDoor();
     let animationId = 0;
     const action = mixer.clipAction(doorModel.animations[0]);
     //const duration = doorModel.animations[0].duration;
@@ -256,6 +263,7 @@ const Road = () => {
   };
 
   const doorActionBackwards = (duration: number) => {
+    void playCreateDoor();
     let animationId = 0;
     const action = mixer.clipAction(doorModel.animations[0]);
     //const duration = doorModel.animations[0].duration;

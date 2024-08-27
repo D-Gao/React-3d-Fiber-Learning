@@ -5,6 +5,10 @@ import ACES_fog_fragment from "./shaders/common/ACES_fog_fragment.glsl";
 import RE_Direct_ToonPhysical from "./shaders/common/RE_Direct_ToonPhysical.glsl";
 import RE_Direct_ToonPhysical_Road from "./shaders/common/RE_Direct_ToonPhysical_Road.glsl";
 
+const duangAudio = new Audio("/audios/Duang.mp3");
+const createDoorAudio = new Audio("/audios/DoorComeout.mp3");
+const throughDoorAudio = new Audio("/audios/DoorThrough.mp3");
+
 const getToonMaterialColumn = (material: THREE.MeshStandardMaterial) => {
   material.metalness = 0.3;
   material.onBeforeCompile = (shader) => {
@@ -88,6 +92,30 @@ const getToonMaterialDoor = (material: THREE.MeshStandardMaterial) => {
     shader.fragmentShader = fragment;
   };
   return material;
+};
+
+export const playDuang = async () => {
+  try {
+    await duangAudio.play();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const playCreateDoor = async () => {
+  try {
+    await createDoorAudio.play();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const playDiveIn = async () => {
+  try {
+    await throughDoorAudio.play();
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 export { getToonMaterialColumn, getToonMaterialRoad, getToonMaterialDoor };

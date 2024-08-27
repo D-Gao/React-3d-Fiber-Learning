@@ -1,6 +1,7 @@
 import { useProgress } from "@react-three/drei";
 import { useEffect, useRef, useState } from "react";
 import useStore from "./zustand/store";
+import { playDuang } from "./utils";
 
 export const LoadingScreen = (/* { started, onStarted } */) => {
   const { progress } = useProgress();
@@ -16,7 +17,9 @@ export const LoadingScreen = (/* { started, onStarted } */) => {
   const startGame = () => {
     //should fadeout the loading screen and start the bgm
     setStarted(true);
+
     startBgm();
+    void playDuang();
   };
   const handleTransitionEnd = () => {
     if (started) {

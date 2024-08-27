@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import useStore from "./zustand/store";
+import { playDuang } from "./utils";
+
 const Overlay = () => {
   const bgmStarted = useStore((state) => state.bgmStarted);
   const toggleDoor = useStore((state) => state.toggleDoor);
@@ -16,6 +18,7 @@ const Overlay = () => {
   const openDoor = () => {
     //should update the global door state
     console.log("open door!");
+    void playDuang();
     toggleDoor();
   };
 
