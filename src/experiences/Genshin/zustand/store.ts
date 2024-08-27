@@ -3,8 +3,10 @@ import { create } from "zustand";
 
 // Define the shape of the state
 interface StoreState {
+  diveIn: boolean;
   bgmStarted: boolean;
   doorCreated: boolean;
+  doorOpened: boolean;
   count: number;
   isRunning: boolean;
   increment: () => void;
@@ -12,10 +14,14 @@ interface StoreState {
   startBgm: () => void;
   toggleDoor: () => void;
   setRunning: (e: boolean) => void;
+  setDiveIn: () => void;
+  setDoorOpen: () => void;
 }
 
 // Create the Zustand store with types
 const useStore = create<StoreState>((set) => ({
+  doorOpened: false,
+  diveIn: false,
   bgmStarted: false,
   doorCreated: false,
   count: 0,
@@ -25,6 +31,8 @@ const useStore = create<StoreState>((set) => ({
   startBgm: () => set((state) => ({ bgmStarted: true })),
   toggleDoor: () => set((state) => ({ doorCreated: !state.doorCreated })),
   setRunning: (e: boolean) => set((state) => ({ isRunning: e })),
+  setDiveIn: () => set((state) => ({ diveIn: true })),
+  setDoorOpen: () => set((state) => ({ doorOpened: true })),
 }));
 
 export default useStore;

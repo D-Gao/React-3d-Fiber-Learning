@@ -47,6 +47,8 @@ const doubleZLength = 2 * zLength;
 const Road = () => {
   const doorLoaded = useRef(false);
   const doorCreated = useStore((state) => state.doorCreated);
+  const doorOpened = useStore((state) => state.doorOpened);
+  const setDiveIn = useStore((state) => state.setDiveIn);
   const doorAlreadyCreated = useRef(false);
   const setRunning = useStore((state) => state.setRunning);
   const isRunning = useStore((state) => state.isRunning);
@@ -154,6 +156,10 @@ const Road = () => {
     }
   }, [doorCreated]);
 
+  useEffect(() => {
+    if (doorOpened) openDoor();
+  }, [doorOpened]);
+
   const createDoor = (z: number) => {
     if (!doorLoaded.current) {
       doorModel.scene.traverse(
@@ -170,7 +176,7 @@ const Road = () => {
       );
       doorModel.scene.scale.set(0.1, 0.1, 0.04);
       doorModel.scene.position.copy(
-        new THREE.Vector3(0, -offset.y, z - zLength - 14)
+        new THREE.Vector3(0, -offset.y, z - zLength - 150)
       );
       totalScene.add(doorModel.scene);
       console.log(doorModel.animations);
@@ -180,7 +186,7 @@ const Road = () => {
         const action = mixer.clipAction(clip);
         action.setLoop(THREE.LoopOnce, 1);
         action.time = 0;
-        // action.clampWhenFinished = true; // Optional: Stop the animation on the last frame
+        action.clampWhenFinished = true; // Optional: Stop the animation on the last frame
         action.play();
       }
       doorLoaded.current = true;
@@ -213,6 +219,12 @@ const Road = () => {
   const openDoor = () => {
     const duration = doorModel.animations[0].duration;
     doorAction(duration);
+    setTimeout(
+      () => {
+        setDiveIn();
+      },
+      (duration * 1000) / 2
+    );
   };
 
   //function to compute the animation for the entire input duration

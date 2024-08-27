@@ -47,36 +47,6 @@ const GenshinExperience = () => {
     void cameraControl.current!.setTarget(0, 10, -5000, false);
   }, []);
 
-  const diveIn = () => {
-    const originPos = camera.position.clone();
-
-    //cameraControl.current!.enabled = false;
-
-    /* tl.current.clear();
-    tl.current.to(camera.position, {
-      x: originPos.x,
-      y: originPos.y,
-      z: originPos.z - 400,
-      duration: 0.6,
-      ease: "power2.in",
-    }); */
-    cameraControl.current!.smoothTime = 0.6;
-    /* void cameraControl.current!.setPosition(
-      originPos.x,
-      originPos.y,
-      originPos.z - 400,
-      true
-    ); */
-
-    void cameraControl.current!.setPosition(
-      originPos.x,
-      originPos.y,
-      originPos.z - 400,
-      true
-    );
-    void cameraControl.current!.setTarget(0, 10, -500, true);
-  };
-
   return (
     <>
       <CameraControls ref={cameraControl}></CameraControls>

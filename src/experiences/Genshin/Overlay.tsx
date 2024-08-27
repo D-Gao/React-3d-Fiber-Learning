@@ -3,6 +3,8 @@ import useStore from "./zustand/store";
 const Overlay = () => {
   const bgmStarted = useStore((state) => state.bgmStarted);
   const toggleDoor = useStore((state) => state.toggleDoor);
+  const setDiveIn = useStore((state) => state.setDiveIn);
+  const setDoorOpen = useStore((state) => state.setDoorOpen);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const handlePlay = () => {
@@ -15,6 +17,11 @@ const Overlay = () => {
     //should update the global door state
     console.log("open door!");
     toggleDoor();
+  };
+
+  const diveIn = () => {
+    console.log("dive in!");
+    setDoorOpen();
   };
 
   useEffect(() => {
@@ -49,6 +56,28 @@ const Overlay = () => {
           <p>
             如果miHoYo或任何有关方面认为这个项目侵犯了他们的权益，请联系我们，我们会立即采取行动。
           </p>
+        </div>
+      </div>
+
+      <div
+        className="enter-bg absolute"
+        style={{ bottom: "4vmin", left: "2%", width: "96%" }}
+      >
+        <div
+          className="flex-center flex"
+          style={{
+            height: "4.5vmin",
+            background:
+              "linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.482) 50%, rgba(0, 0, 0, 0) 100%)",
+          }}
+        >
+          <img
+            onClick={diveIn}
+            src="/Entry.png"
+            className="enter-entry block m-auto"
+            style={{ height: "2.5vmin" }}
+            alt=""
+          />
         </div>
       </div>
     </>

@@ -12,10 +12,29 @@ const CameraFoward = ({ ref }: { ref: React.RefObject<CameraControls> }) => {
   const { camera } = useThree();
   const [foward, setFoward] = useState(true);
   const isRunning = useStore((state) => state.isRunning);
+  const diveIn = useStore((state) => state.diveIn);
 
   const tl = useRef<gsap.core.Timeline>(gsap.timeline());
   const center = useRef(new THREE.Vector3(0, 10, 10));
   const cameraTarget = useRef(new THREE.Vector3(0, 10, 5));
+
+  useEffect(() => {
+    if (diveIn) diveInAction();
+  }, [diveIn]);
+
+  const diveInAction = () => {
+    const originPos = camera.position.clone();
+    ref.current!.smoothTime = 0.3;
+    void ref.current!.setPosition(
+      originPos.x,
+      originPos.y,
+      originPos.z - 400,
+      true
+    );
+    const curTarget = ref.current!.getTarget(new THREE.Vector3());
+    void ref.current!.setTarget(0, 10, curTarget.z - 500, true);
+  };
+
   useEffect(() => {
     console.log("isRunning");
     console.log(isRunning);
