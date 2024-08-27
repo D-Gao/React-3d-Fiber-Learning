@@ -30,6 +30,7 @@ const Genshin = () => {
         shadows
         camera={{ far: 100000, position: [0, 10, 10], fov: 45 }}
       >
+        {/* <Perf position={"top-left"}></Perf> */}
         {/* <color attach="background" args={["#309BFF"]} /> */}
         <GenshinExperience></GenshinExperience>
         <EffectComposer>
@@ -44,10 +45,17 @@ const Genshin = () => {
           <ToneMapping mode={ToneMappingMode.ACES_FILMIC}></ToneMapping>
           <FXAA />
         </EffectComposer>
-        {/*  <Perf position={"top-left"}></Perf> */}
       </Canvas>
+
       <Loader></Loader>
       <>
+        <div className="absolute bottom-[16%] right-[4%]">
+          <div className="flex flex-col items-center space-y-3">
+            <div className="width-[7vmin] height-[7vmin]">
+              <img src="/ClickMe.png" className="w-full h-full block" alt="" />
+            </div>
+          </div>
+        </div>
         <div className="absolute bottom-[1%] left-[1%] w-[75vmin] text-[0.4rem] pointer-events-none">
           {" "}
           <div className="">

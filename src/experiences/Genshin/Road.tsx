@@ -90,7 +90,7 @@ const Road = () => {
       //scene.scale.multiplyScalar(0.8);
     }
 
-    //totalScene.add(scene);
+    totalScene.add(scene);
     scene.children.forEach((item, i) => {
       originPosList.current.push(item.position.clone());
     });
@@ -165,17 +165,26 @@ const Road = () => {
       action.clampWhenFinished = true; // Optional: Stop the animation on the last frame
       action.play();
     }
-    doorAction();
+    doorAction(1.25);
+
+    //
+    setTimeout(() => {
+      openDoor();
+    }, 5000);
   };
 
-  //function to compute the entire animation
-  const doorAction = () => {
+  const openDoor = () => {
+    const duration = doorModel.animations[0].duration;
+    doorAction(duration);
+  };
+
+  //function to compute the animation for the entire input duration
+  const doorAction = (duration: number) => {
     let animationId = 0;
     const action = mixer.clipAction(doorModel.animations[0]);
-    const duration = doorModel.animations[0].duration;
+    //const duration = doorModel.animations[0].duration;
     let lasttime = 0;
     const animate = (timestamp: number) => {
-      console.log("runiing");
       //get the current animation time
       const currentTime = action.time;
 
@@ -184,7 +193,7 @@ const Road = () => {
       else delta = timestamp - lasttime;
       lasttime = timestamp;
 
-      mixer.update(delta / 1000);
+      mixer.update(delta / 1000 / 2);
 
       if (currentTime >= duration) {
         cancelAnimationFrame(animationId);

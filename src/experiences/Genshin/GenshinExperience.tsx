@@ -11,11 +11,13 @@ import PolarLight from "./PolarLight";
 import StarParticles from "./StarParticles";
 import Road from "./Road";
 import CameraFoward from "./CameraFoward";
+import gsap from "gsap";
 
 const GenshinExperience = () => {
   const { camera } = useThree();
   const cameraControl = useRef<CameraControls>(null);
   /*  CameraFoward({ ref: cameraControl }); */
+  const tl = useRef(gsap.timeline());
 
   const drRef = useRef<THREE.DirectionalLight>(null);
   const { intensitydr, intensityab, color, colordr } = useControls(
@@ -42,20 +44,54 @@ const GenshinExperience = () => {
 
     drRef.current.position.copy(camera.position.clone().add(originPos));
 
-    void cameraControl.current!.setTarget(0, 10, 5, false);
+    void cameraControl.current!.setTarget(0, 10, -5000, false);
+
+    setTimeout(() => {
+      diveIn();
+    }, 5000);
   }, []);
+
+  const diveIn = () => {
+    const originPos = camera.position.clone();
+
+    //cameraControl.current!.enabled = false;
+
+    /* tl.current.clear();
+    tl.current.to(camera.position, {
+      x: originPos.x,
+      y: originPos.y,
+      z: originPos.z - 400,
+      duration: 0.6,
+      ease: "power2.in",
+    }); */
+    cameraControl.current!.smoothTime = 0.6;
+    /* void cameraControl.current!.setPosition(
+      originPos.x,
+      originPos.y,
+      originPos.z - 400,
+      true
+    ); */
+
+    void cameraControl.current!.setPosition(
+      originPos.x,
+      originPos.y,
+      originPos.z - 400,
+      true
+    );
+    void cameraControl.current!.setTarget(0, 10, -500, true);
+  };
 
   return (
     <>
       <CameraControls ref={cameraControl}></CameraControls>
       <GradientBackground></GradientBackground>
       <Road></Road>
-      {/* <PolarLight></PolarLight>
+      <PolarLight></PolarLight>
       <StarParticles></StarParticles>
       <BigCloud></BigCloud>
       <Cloud></Cloud>
 
-      <Column></Column> */}
+      <Column></Column>
       <directionalLight
         ref={drRef}
         color={colordr}
