@@ -16,7 +16,7 @@ import gsap from "gsap";
 const GenshinExperience = () => {
   const { camera } = useThree();
   const cameraControl = useRef<CameraControls>(null);
-  /*  CameraFoward({ ref: cameraControl }); */
+  CameraFoward({ ref: cameraControl });
   const tl = useRef(gsap.timeline());
 
   const drRef = useRef<THREE.DirectionalLight>(null);
@@ -45,10 +45,6 @@ const GenshinExperience = () => {
     drRef.current.position.copy(camera.position.clone().add(originPos));
 
     void cameraControl.current!.setTarget(0, 10, -5000, false);
-
-    setTimeout(() => {
-      diveIn();
-    }, 5000);
   }, []);
 
   const diveIn = () => {

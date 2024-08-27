@@ -2,12 +2,19 @@ import { useEffect, useMemo, useRef } from "react";
 import useStore from "./zustand/store";
 const Overlay = () => {
   const bgmStarted = useStore((state) => state.bgmStarted);
+  const toggleDoor = useStore((state) => state.toggleDoor);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const handlePlay = () => {
     if (audioRef.current) {
       void audioRef.current.play();
     }
+  };
+
+  const openDoor = () => {
+    //should update the global door state
+    console.log("open door!");
+    toggleDoor();
   };
 
   useEffect(() => {
@@ -20,7 +27,12 @@ const Overlay = () => {
       <div className="absolute bottom-[16%] right-[4%]">
         <div className="flex flex-col items-center space-y-3">
           <div className="width-[7vmin] height-[7vmin]">
-            <img src="/ClickMe.png" className="w-full h-full block" alt="" />
+            <img
+              src="/ClickMe.png"
+              className="w-full h-full block"
+              alt=""
+              onClick={openDoor}
+            />
           </div>
         </div>
       </div>

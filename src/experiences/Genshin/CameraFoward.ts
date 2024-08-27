@@ -3,6 +3,7 @@ import gsap from "gsap";
 import { useThree } from "@react-three/fiber";
 import { Ref, useEffect, useRef, useState } from "react";
 import { CameraControls } from "@react-three/drei";
+import useStore from "./zustand/store";
 
 const params = {
   speed: 1,
@@ -10,17 +11,23 @@ const params = {
 const CameraFoward = ({ ref }: { ref: React.RefObject<CameraControls> }) => {
   const { camera } = useThree();
   const [foward, setFoward] = useState(true);
+  const isRunning = useStore((state) => state.isRunning);
 
   const tl = useRef<gsap.core.Timeline>(gsap.timeline());
   const center = useRef(new THREE.Vector3(0, 10, 10));
   const cameraTarget = useRef(new THREE.Vector3(0, 10, 5));
   useEffect(() => {
-    if (!foward || !ref.current) return;
+    console.log("isRunning");
+    console.log(isRunning);
+    if (!isRunning || !ref.current) {
+      tl.current.clear();
+      return;
+    }
     void ref.current.setTarget(
       ...cameraTarget.current.clone().toArray(),
       false
     );
-    /*  tl.current.clear(); */
+    tl.current.clear();
     tl.current.to(
       {},
       {
@@ -47,7 +54,7 @@ const CameraFoward = ({ ref }: { ref: React.RefObject<CameraControls> }) => {
         repeat: -1,
       }
     );
-  }, [foward]);
+  }, [foward, isRunning, ref]);
 
   return { setFoward };
 };
