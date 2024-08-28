@@ -12,8 +12,25 @@ import { Perf } from "r3f-perf";
 import * as THREE from "three";
 import Overlay from "./Overlay";
 import { LoadingScreen } from "./LoadingScreen";
+import BloomTransition from "./effects/BloomTransition";
+import { useControls } from "leva";
 
 const Genshin = () => {
+  const { intensitydr, intensityab, color, colordr } = useControls(
+    "Character Control",
+    {
+      intensitydr: { value: 0, min: 0, max: 3, step: 0.01 },
+      intensityab: { value: 0, min: 0, max: 1, step: 0.01 },
+      color: {
+        value: "#b7cfff", // Default color //  0f6eff
+        label: "Sphere Color",
+      },
+      colordr: {
+        value: "#ffd9b6", // Default color //  0f6eff
+        label: "Sphere Color",
+      },
+    }
+  );
   return (
     <>
       <Canvas
@@ -33,7 +50,8 @@ const Genshin = () => {
         {/* <Perf position={"top-left"}></Perf> */}
 
         <GenshinExperience></GenshinExperience>
-        <EffectComposer multisampling={4}>
+
+        <EffectComposer multisampling={0}>
           {/*  default is set to 8 */}
           <Bloom
             blendFunction={BlendFunction.ADD}
@@ -44,7 +62,11 @@ const Genshin = () => {
             resolutionY={Resolution.AUTO_SIZE} // The vertical resolution.
           />
           <ToneMapping mode={ToneMappingMode.ACES_FILMIC}></ToneMapping>
-          <FXAA />
+          {/*  <FXAA /> */}
+          <BloomTransition
+            intensity={intensitydr}
+            whiteAlpha={intensityab}
+          ></BloomTransition>
         </EffectComposer>
       </Canvas>
 

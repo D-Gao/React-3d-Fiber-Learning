@@ -9,7 +9,7 @@
 uniform float uIntensity;
 uniform float uWhiteAlpha;
 
-void main(const in vec4 inputColor,const in vec2 uv,out vec4 outputColor)
+void mainImage(const in vec4 inputColor,const in vec2 uv,out vec4 outputColor)
 {
     vec4 diffuseBase=texture(iChannel0,uv);
     
