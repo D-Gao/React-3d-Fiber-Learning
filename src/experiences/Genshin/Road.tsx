@@ -65,6 +65,9 @@ const Road = () => {
   ) as GLTFResult;
 
   const doorModel = useGLTF("/models/DOOR.glb") as DoorGLTFResult;
+
+  const planeModel = useGLTF("/models/WHITE_PLANE.glb") as GLTF;
+
   const mixer = useMemo(
     () => new THREE.AnimationMixer(doorModel.scene),
     [doorModel]
@@ -207,6 +210,8 @@ const Road = () => {
   };
 
   const openDoor = () => {
+    //create the white plane bejind the door
+    createWhitePlane();
     const duration = doorModel.animations[0].duration;
     doorAction(duration);
     setTimeout(
@@ -275,7 +280,31 @@ const Road = () => {
     //cancelAnimationFrame(id);
   };
 
-  return <></>;
+  const createWhitePlane = () => {
+    planeModel.scene.scale.setScalar(0.1);
+    const offset = new THREE.Vector3(
+      doorModel.scene.position.x,
+      doorModel.scene.position.y,
+      doorModel.scene.position.z
+    );
+    planeModel.scene.position.copy(offset);
+
+    planeModel.scene.traverse((obj: THREE.Object3D<THREE.Object3DEventMap>) => {
+      if (obj instanceof THREE.Mesh) {
+        const material = obj.material as THREE.MeshStandardMaterial;
+        material.color = new THREE.Color("#ffffff").multiplyScalar(3);
+        obj.frustumCulled = false;
+      }
+    });
+
+    totalScene.add(planeModel.scene);
+  };
+
+  return (
+    <>
+      <mesh></mesh>
+    </>
+  );
 };
 
 export default Road;

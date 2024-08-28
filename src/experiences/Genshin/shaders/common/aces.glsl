@@ -40,42 +40,42 @@ vec3 aces_fitted(vec3 color)
         vec3(.07600,.90834,.01566),
         vec3(.02840,.13383,.83777));
         
+    mat3 ACES_OUTPUT_MAT=mat3_from_rows(
+        vec3(1.60475,-.53108,-.07367),
+        vec3(-.10208,1.10813,-.00605),
+        vec3(-.00327,-.07276,1.07602));
+            
+    color=mul(ACES_INPUT_MAT,color);
+    
+    // Apply RRT and ODT
+    color=rrt_odt_fit(color);
+    
+    color=mul(ACES_OUTPUT_MAT,color);
+    
+    return color;
+  }
+        
+// 反向的ACES
+vec3 ACES_Inv(vec3 color)
+{
+
+    mat3 ACES_INPUT_MAT=mat3_from_rows(
+        vec3(1.76474,-.67577,-.08896),
+        vec3(-.14702,1.16025,-.01322),
+        vec3(-.03633,-.16243,1.19877));
+        
         mat3 ACES_OUTPUT_MAT=mat3_from_rows(
-            vec3(1.60475,-.53108,-.07367),
-            vec3(-.10208,1.10813,-.00605),
-            vec3(-.00327,-.07276,1.07602));
-            
-            color=mul(ACES_INPUT_MAT,color);
-            
-            // Apply RRT and ODT
-            color=rrt_odt_fit(color);
+            vec3(.64304,.31119,.04578),
+            vec3(.05926,.93144,.00929),
+            vec3(.00596,.06393,.93012));
             
             color=mul(ACES_OUTPUT_MAT,color);
+            
+            // Apply RRT and ODT
+            color=inv_rrt_odt_fit(color);
+            
+            color=mul(ACES_INPUT_MAT,color);
             
             return color;
         }
         
-        // 反向的ACES
-        vec3 ACES_Inv(vec3 color)
-        {
-
-            mat3 ACES_INPUT_MAT=mat3_from_rows(
-                vec3(1.76474,-.67577,-.08896),
-                vec3(-.14702,1.16025,-.01322),
-                vec3(-.03633,-.16243,1.19877));
-                
-                mat3 ACES_OUTPUT_MAT=mat3_from_rows(
-                    vec3(.64304,.31119,.04578),
-                    vec3(.05926,.93144,.00929),
-                    vec3(.00596,.06393,.93012));
-                    
-                    color=mul(ACES_OUTPUT_MAT,color);
-                    
-                    // Apply RRT and ODT
-                    color=inv_rrt_odt_fit(color);
-                    
-                    color=mul(ACES_INPUT_MAT,color);
-                    
-                    return color;
-                }
-                

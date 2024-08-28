@@ -33,7 +33,8 @@ const Genshin = () => {
         {/* <Perf position={"top-left"}></Perf> */}
 
         <GenshinExperience></GenshinExperience>
-        <EffectComposer>
+        <EffectComposer multisampling={4}>
+          {/*  default is set to 8 */}
           <Bloom
             blendFunction={BlendFunction.ADD}
             mipmapBlur
