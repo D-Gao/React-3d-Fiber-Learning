@@ -1,7 +1,8 @@
 import { useProgress } from "@react-three/drei";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import useStore from "./zustand/store";
 import { playDuang } from "./utils";
+import { getStory } from "./story";
 
 export const LoadingScreen = (/* { started, onStarted } */) => {
   const { progress } = useProgress();
@@ -9,6 +10,9 @@ export const LoadingScreen = (/* { started, onStarted } */) => {
   const [ready, setReady] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const startBgm = useStore((state) => state.startBgm);
+  const story = useMemo(() => {
+    return getStory();
+  }, []);
 
   useEffect(() => {
     if (progress == 100) setReady(true);
@@ -24,6 +28,7 @@ export const LoadingScreen = (/* { started, onStarted } */) => {
     ref.current!.style.transition = "opacity 2s ease-in";
     ref.current!.style.pointerEvents = "none";
     startBgm();
+    document.querySelector(".menu")?.classList.remove("hidden");
   };
   /* const handleTransitionEnd = () => {
     if (started) {
@@ -35,9 +40,8 @@ export const LoadingScreen = (/* { started, onStarted } */) => {
     <>
       <div
         ref={ref}
-        className={`/* loader-screen */ fixed z-10 inset-0 bg-white transition-opacity duration-1000 opacity-100
-         `}
-        /*  onTransitionEnd={handleTransitionEnd} */
+        className={` loader-screen  fixed z-10 inset-0 bg-white transition-opacity duration-1000 opacity-100
+ `}
         style={{ willChange: "opacity " }}
       >
         <div className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
@@ -59,7 +63,6 @@ export const LoadingScreen = (/* { started, onStarted } */) => {
           {ready ? (
             <button
               className="loadingScreen__button"
-              /* disabled={progress < 100} */
               onClick={() => void startGame()}
             >
               启动
@@ -68,8 +71,6 @@ export const LoadingScreen = (/* { started, onStarted } */) => {
             <progress
               className="loader-progress progress-bar transition-all ease-in-out duration-300 "
               style={{
-                /*  width: `${progress}%`, */
-
                 height: "0.375rem",
               }}
               value={progress}
@@ -79,27 +80,19 @@ export const LoadingScreen = (/* { started, onStarted } */) => {
           )}
         </div>
       </div>
+      <div className="final hidden">
+        <div className="/* absolute inset-0  */ flex justify-center items-center h-svh">
+          <div className="block text-center overflow-y-auto  max-h-svh">
+            <p> {story.title + "," + story.content} </p>
 
-      {/* <div className={`loadingScreen ${started ? "loadingScreen--started" : ""}`}>
-      <div className="loadingScreen__progress">
-        <div
-          className="loadingScreen__progress__value"
-          style={{
-            width: `${progress}%`,
-          }}
-        />
+            <p> </p>
+          </div>
+        </div>
       </div>
-      <div className="loadingScreen__board">
-        <h1 className="loadingScreen__title">Please help me!</h1>
-        <button
-          className="loadingScreen__button"
-          disabled={progress < 100}
-          onClick={onStarted}
-        >
-          Start
-        </button>
-      </div>
-    </div> */}
     </>
   );
 };
+
+{
+  /* */
+}

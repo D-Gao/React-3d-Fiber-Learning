@@ -14,9 +14,10 @@ import Overlay from "./Overlay";
 import { LoadingScreen } from "./LoadingScreen";
 import BloomTransition from "./effects/BloomTransition";
 import { useControls } from "leva";
+import { useState } from "react";
 
 const Genshin = () => {
-  const { intensitydr, intensityab, color, colordr } = useControls(
+  /* const { intensitydr, intensityab, color, colordr } = useControls(
     "Character Control",
     {
       intensitydr: { value: 0, min: 0, max: 3, step: 0.01 },
@@ -30,7 +31,9 @@ const Genshin = () => {
         label: "Sphere Color",
       },
     }
-  );
+  ); */
+
+  /* const [multisampling, setMultisampling] = useState(4); */
   return (
     <>
       <Canvas
@@ -42,6 +45,10 @@ const Genshin = () => {
           THREE.ColorManagement.enabled = false;
           // 设置输出颜色空间
           gl.outputColorSpace = THREE.LinearSRGBColorSpace;
+          /*  if (gl.getPixelRatio() == 1) {
+            setMultisampling(8);
+          } */
+          gl.toneMapping = THREE.NoToneMapping;
         }}
         shadows
         camera={{ far: 100000, position: [0, 10, 10], fov: 45 }}
@@ -50,9 +57,8 @@ const Genshin = () => {
         {/* <Perf position={"top-left"}></Perf> */}
 
         <GenshinExperience></GenshinExperience>
-
+        {/*  default is set to 8 */}
         <EffectComposer multisampling={0}>
-          {/*  default is set to 8 */}
           <Bloom
             blendFunction={BlendFunction.ADD}
             mipmapBlur
@@ -62,11 +68,8 @@ const Genshin = () => {
             resolutionY={Resolution.AUTO_SIZE} // The vertical resolution.
           />
           <ToneMapping mode={ToneMappingMode.ACES_FILMIC}></ToneMapping>
-          {/*  <FXAA /> */}
-          <BloomTransition
-            intensity={intensitydr}
-            whiteAlpha={intensityab}
-          ></BloomTransition>
+
+          <BloomTransition intensity={0} whiteAlpha={0}></BloomTransition>
         </EffectComposer>
       </Canvas>
 

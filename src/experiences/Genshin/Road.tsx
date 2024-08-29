@@ -202,11 +202,14 @@ const Road = () => {
 
     console.log("creating doors");
 
-    doorAction(1.25);
+    doorAction(1.25, () => {
+      document.querySelector(".enter-bg")?.classList.remove("hidden");
+    });
   };
 
   const destroyDoor = () => {
     doorActionBackwards(0);
+    document.querySelector(".enter-bg")?.classList.add("hidden");
   };
 
   const openDoor = () => {
@@ -214,17 +217,20 @@ const Road = () => {
     createWhitePlane();
     const duration = doorModel.animations[0].duration;
     doorAction(duration);
+
     setTimeout(
       () => {
         setDiveIn();
         void playDiveIn();
+        document.querySelector(".enter-bg")?.classList.add("hidden");
+        document.querySelector(".menu")?.classList.add("hidden");
       },
       (duration * 1000) / 2
     );
   };
 
   //function to compute the animation for the entire input duration
-  const doorAction = (duration: number) => {
+  const doorAction = (duration: number, cb?: () => void) => {
     void playCreateDoor();
     let animationId = 0;
     const action = mixer.clipAction(doorModel.animations[0]);
@@ -246,6 +252,7 @@ const Road = () => {
       if (currentTime >= duration) {
         doorAlreadyCreated.current = true;
         cancelAnimationFrame(animationId);
+        if (cb) cb();
       } else requestAnimationFrame(animate);
     };
     animationId = requestAnimationFrame(animate);
