@@ -8,9 +8,6 @@ A list of cases I've encountered online, and reproduced with some possible optim
 
 - [Installation](#installation)
 - [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
 
 ## Installation
 
@@ -34,3 +31,5 @@ To run the project locally, use the following command:
 ```sh
 npm run dev
 ```
+
+To a list of available projects you can find in App.tsx file with all the subpaths to the corresponding project page. For example if the project has a path like su7, the entire url you should put in the browser should like localhost:5173/su7
